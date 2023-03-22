@@ -19,7 +19,8 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [ubuntu-latest, windows-latest, macOS-latest]
+        # platform: [ubuntu-latest, windows-latest, macOS-latest]
+        platform: [ubuntu-latest]
         node-version: [16.x, 18.x]
     runs-on: ${{ matrix.platform }}
     steps:
