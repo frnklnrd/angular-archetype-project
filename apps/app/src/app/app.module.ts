@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import {
   HashLocationStrategy,
   LocationStrategy,
-  PathLocationStrategy,
 } from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,8 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule,
-} from 'ngx-perfect-scrollbar';
+  ExtNgxPerfectScrollbarModule,
+} from '@app/ext/ngx-perfect-scrollbar';
 
 // Import routing module
 import { AppRoutingModule } from './app-routing.module';
@@ -49,9 +48,10 @@ import {
 } from '@coreui/angular';
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
-import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
+
 import { APP_VERSION } from './config/app.vars';
 import { appVersion } from './config/app.version';
+import { BackButtonDisableModule } from '@app/ext/angular-disable-browser-back-button';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -83,7 +83,7 @@ const APP_CONTAINERS = [
     SidebarModule,
     IconModule,
     // ---------------------------------
-    PerfectScrollbarModule,
+    ExtNgxPerfectScrollbarModule,
     // ---------------------------------
     NavModule,
     ButtonModule,

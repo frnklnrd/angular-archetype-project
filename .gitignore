@@ -39,8 +39,6 @@ chrome-profiler-events*.json
 
 # Miscellaneous
 
-/.angular
-.angular/
 /.angular/cache
 /.sass-cache
 .sass-cache/
@@ -57,3 +55,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
+
+.angular
