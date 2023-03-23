@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import {
   HashLocationStrategy,
   LocationStrategy,
-  PathLocationStrategy,
 } from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,8 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule,
-} from 'ngx-perfect-scrollbar';
+  ExtNgxPerfectScrollbarModule,
+} from '@app/ext/ngx-perfect-scrollbar';
 
 // Import routing module
 import { AppRoutingModule } from './app-routing.module';
@@ -50,6 +49,10 @@ import {
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 
+import { APP_VERSION } from './config/app.vars';
+import { appVersion } from './config/app.version';
+import { BackButtonDisableModule } from '@app/ext/angular-disable-browser-back-button';
+
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
 };
@@ -63,9 +66,14 @@ const APP_CONTAINERS = [
 @NgModule({
   declarations: [AppComponent, ...APP_CONTAINERS],
   imports: [
+    // ---------------------------------
     BrowserModule,
     BrowserAnimationsModule,
+    // ---------------------------------
     AppRoutingModule,
+    // ---------------------------------
+    ReactiveFormsModule,
+    // ---------------------------------
     AvatarModule,
     BreadcrumbModule,
     FooterModule,
@@ -74,13 +82,14 @@ const APP_CONTAINERS = [
     HeaderModule,
     SidebarModule,
     IconModule,
-    PerfectScrollbarModule,
+    // ---------------------------------
+    ExtNgxPerfectScrollbarModule,
+    // ---------------------------------
     NavModule,
     ButtonModule,
     FormModule,
     UtilitiesModule,
     ButtonGroupModule,
-    ReactiveFormsModule,
     SidebarModule,
     SharedModule,
     TabsModule,
@@ -89,6 +98,11 @@ const APP_CONTAINERS = [
     BadgeModule,
     ListGroupModule,
     CardModule,
+    // ---------------------------------
+    BackButtonDisableModule.forRoot({
+      preserveScrollPosition: true,
+    }),
+    // ---------------------------------
   ],
   providers: [
     {
@@ -98,6 +112,10 @@ const APP_CONTAINERS = [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+    {
+      provide: APP_VERSION,
+      useValue: appVersion,
     },
     IconSetService,
     Title,

@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<!--
-* CoreUI - Angular 15.1 Free Admin Template
-* @version v4.3.9
-* @link https://coreui.io/angular/
-* Copyright (c) 2017-2023 creativeLabs Łukasz Holeczek
-* License: MIT
--->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -14,25 +7,49 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
       name="viewport"
     />
-    <meta content="CoreUI Free Angular Admin Template" name="description" />
-    <meta content="Łukasz Holeczek" name="author" />
-    <meta
-      content="CoreUI,Bootstrap,Admin,Template,Free,Angular,Dashboard,Typescript"
-      name="keyword"
-    />
+    <meta content="Application" name="description" />
+    <meta content="Techpromux" name="author" />
+    <meta content="Application" name="keyword" />
     <link href="assets/favicon.ico" rel="icon" type="image/x-icon" />
-    <title>CoreUI Free Angular Admin Template</title>
+    <title>Application</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <app-root>
+      <!-- App Loading... -->
+
       <div
         class="fade show"
-        style="text-align: center; padding-top: calc(100vh / 2); height: 100vh"
+        style="
+          text-align: center;
+          padding-top: calc(100vh / 2 - 15px);
+          height: 100vh;
+        "
       >
         <i class="spinner-grow spinner-grow-sm"></i>
         <span class="m-1">Loading...</span>
       </div>
+
+      <div
+        id="loader-container"
+        class="fade show container-fluid hide-native-scrollbar"
+      >
+        <div class="row">
+          <div id="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="loading"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Loading... -->
     </app-root>
   </body>
 </html>

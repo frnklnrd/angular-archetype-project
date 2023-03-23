@@ -21,10 +21,12 @@
     routerLink="./"
   >
   </c-sidebar-brand>
+
   <perfect-scrollbar [config]="perfectScrollbarConfig">
     <!--  [perfectScrollbar]="perfectScrollbarConfig"-->
     <c-sidebar-nav [navItems]="navItems" dropdownMode="close"> </c-sidebar-nav>
   </perfect-scrollbar>
+
   <c-sidebar-toggler
     *ngIf="!sidebar.narrow"
     toggle="unfoldable"
@@ -33,7 +35,11 @@
 </c-sidebar>
 
 <!--main-->
-<div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
+<div
+  class="wrapper d-flex flex-column min-vh-100 dark:bg-transparent"
+  [class.bg-light]="theme == 'light'"
+  [class.bg-dark]="theme == 'dark'"
+>
   <!--app-header-->
   <app-default-header
     class="mb-4 d-print-none header header-sticky"
@@ -47,5 +53,32 @@
     </c-container>
   </div>
   <!--app footer-->
-  <app-default-footer></app-default-footer>
+  <c-footer position="sticky" class="ml-1 mr-1 ps-0 pe-0 pt-0 pb-0">
+    <app-default-footer class="ps-0 pe-0 pt-0 pb-0 w-100"></app-default-footer>
+  </c-footer>
 </div>
+
+<!-- App Loading... -->
+
+<ng-container *ngIf="loading">
+  <div
+    id="loader-container"
+    class="fade show container-fluid hide-native-scrollbar"
+  >
+    <div class="row">
+      <div id="loader">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="loading"></div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- App Loading... -->

@@ -1,20 +1,25 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# Compiled output
+# Compiled Output
+
 /dist
 /tmp
 /out-tsc
 /bazel-out
 
-# Node
+# Node Dependencies
+
 /node_modules
 npm-debug.log
 yarn-error.log
 
-# profiling files
+# Profiling files
+
 chrome-profiler-events*.json
 
-# IDEs and editors
+# IDEs and Editors
+
+/.idea
 .idea/
 .project
 .classpath
@@ -23,7 +28,8 @@ chrome-profiler-events*.json
 .settings/
 *.sublime-workspace
 
-# Visual Studio Code
+# IDE - VSCode
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -32,14 +38,22 @@ chrome-profiler-events*.json
 .history/*
 
 # Miscellaneous
+
 /.angular/cache
+/.sass-cache
 .sass-cache/
 /connect.lock
 /coverage
 /libpeerconnection.log
+npm-debug.log
+yarn-error.log
 testem.log
 /typings
 
-# System files
+# System Files
+
 .DS_Store
 Thumbs.db
+
+
+.angular

@@ -19,7 +19,7 @@ import {
 
 import { IconModule } from '@coreui/icons-angular';
 
-import { DocsComponentsModule } from '@docs-components/docs-components.module';
+import { DocsComponentsModule } from 'apps/app/src/components';
 import { NotificationsRoutingModule } from './notifications-routing.module';
 
 import { AlertsComponent } from './alerts/alerts.component';
