@@ -49,6 +49,9 @@ import {
 } from '@coreui/angular';
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
+import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
+import { APP_VERSION } from './config/app.vars';
+import { appVersion } from './config/app.version';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -63,9 +66,14 @@ const APP_CONTAINERS = [
 @NgModule({
   declarations: [AppComponent, ...APP_CONTAINERS],
   imports: [
+    // ---------------------------------
     BrowserModule,
     BrowserAnimationsModule,
+    // ---------------------------------
     AppRoutingModule,
+    // ---------------------------------
+    ReactiveFormsModule,
+    // ---------------------------------
     AvatarModule,
     BreadcrumbModule,
     FooterModule,
@@ -74,13 +82,14 @@ const APP_CONTAINERS = [
     HeaderModule,
     SidebarModule,
     IconModule,
+    // ---------------------------------
     PerfectScrollbarModule,
+    // ---------------------------------
     NavModule,
     ButtonModule,
     FormModule,
     UtilitiesModule,
     ButtonGroupModule,
-    ReactiveFormsModule,
     SidebarModule,
     SharedModule,
     TabsModule,
@@ -89,6 +98,11 @@ const APP_CONTAINERS = [
     BadgeModule,
     ListGroupModule,
     CardModule,
+    // ---------------------------------
+    BackButtonDisableModule.forRoot({
+      preserveScrollPosition: true,
+    }),
+    // ---------------------------------
   ],
   providers: [
     {
@@ -98,6 +112,10 @@ const APP_CONTAINERS = [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
+    {
+      provide: APP_VERSION,
+      useValue: appVersion,
     },
     IconSetService,
     Title,
