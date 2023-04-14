@@ -24,12 +24,39 @@
         "tsConfig": "apps/app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "preserveSymlinks": true,
-        "assets": ["apps/app/src/favicon.ico", "apps/app/src/assets"],
-        "styles": ["apps/app/src/scss/styles.scss"],
+        "assets": [
+          "apps/app/src/assets/favicon.ico",
+          "apps/app/src/assets/manifest.webmanifest",
+          "apps/app/src/assets"
+        ],
+        "styles": [
+          "./node_modules/font-awesome/css/font-awesome.css",
+          "./node_modules/@swimlane/ngx-datatable/index.css",
+          "./node_modules/@swimlane/ngx-datatable/themes/bootstrap.scss",
+          "./node_modules/@swimlane/ngx-datatable/themes/dark.scss",
+          "./node_modules/@swimlane/ngx-datatable/assets/icons.css",
+          "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+          "node_modules/@ng-select/ng-select/themes/default.theme.css",
+          "node_modules/highlight.js/styles/github.css",
+          "node_modules/angular-notifier/styles/core.scss",
+          "node_modules/angular-notifier/styles/themes/theme-material.scss",
+          "node_modules/angular-notifier/styles/types/type-default.scss",
+          "node_modules/angular-notifier/styles/types/type-error.scss",
+          "node_modules/angular-notifier/styles/types/type-info.scss",
+          "node_modules/angular-notifier/styles/types/type-success.scss",
+          "node_modules/angular-notifier/styles/types/type-warning.scss",
+          "apps/app/src/scss/styles.scss"
+        ],
         "scripts": [],
         "allowedCommonJsDependencies": [
+          "lodash",
+          "crypto",
+          "crypto-js",
+          "!val-loader!./dotenv-loader.parser",
+          "val-loader",
           "chart.js",
-          "@coreui/chartjs/dist/js/coreui-chartjs.js"
+          "@coreui/chartjs/dist/js/coreui-chartjs.js",
+          "angular2-text-mask"
         ]
       },
       "configurations": {
@@ -37,8 +64,8 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "1500kb",
-              "maximumError": "6mb"
+              "maximumWarning": "1000kb",
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -72,7 +99,8 @@
           "browserTarget": "app:build:production"
         },
         "development": {
-          "browserTarget": "app:build:development"
+          "browserTarget": "app:build:development",
+          "proxyConfig": "proxy.conf.js"
         }
       },
       "defaultConfiguration": "development"

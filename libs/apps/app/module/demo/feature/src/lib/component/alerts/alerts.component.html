@@ -1,0 +1,173 @@
+<p>ALERTS DEMOS!!!</p>
+
+<hr />
+
+<button cButton class="me-1" (click)="openAlert()" color="primary">
+  <svg cIcon class="me-2" name="cil-window-maximize"></svg>
+  ALERT
+</button>
+
+<button cButton class="me-1" (click)="openConfirm()" color="success">
+  <svg cIcon class="me-2" name="cil-thumb-up"></svg>
+  <svg cIcon class="me-2" name="cil-thumb-down"></svg>
+  CONFIRM
+</button>
+
+<button cButton class="me-1" (click)="openModalFromTemplate()" color="warning">
+  <svg cIcon class="me-2" name="cil-spreadsheet"></svg>
+  CUSTOM
+</button>
+
+<ng-template #customModalTpl>
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+    <button cButtonClose (click)="uiModalClose()"></button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="recipient-name" class="col-form-label">Recipient:</label>
+        <input type="text" class="form-control" id="recipient-name" />
+      </div>
+      <div class="form-group">
+        <label for="recipient-date" class="col-form-label">Date:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="recipient-date"
+          bsDatepicker
+        />
+      </div>
+      <div class="form-group">
+        <label for="recipient-date-range" class="col-form-label"
+          >Date Range:</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="recipient-date-range"
+          bsDaterangepicker
+        />
+      </div>
+      <div class="form-group">
+        <label for="message-text" class="col-form-label">Message:</label>
+        <textarea class="form-control" id="message-text"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="uiModalClose()">
+      Close
+    </button>
+    <button type="button" class="btn btn-primary">Send message</button>
+  </div>
+</ng-template>
+
+<!--
+  ---------------------------------------------------------------------------------------------
+-->
+
+<hr />
+
+<div class="col-md-12">
+  <button
+    [innerHTML]="'default' | titlecase"
+    class="btn btn-promary border-dark me-2"
+    (click)="uiNotifier.show('Good evening, you lovely person!')"
+  ></button>
+
+  <button
+    [innerHTML]="'info' | titlecase"
+    class="btn btn-info me-2"
+    (click)="uiNotifier.info('This library is built on top of Angular 2.')"
+  ></button>
+
+  <button
+    [innerHTML]="'success' | titlecase"
+    class="btn btn-success me-2"
+    (click)="uiNotifier.success('Notification successfully opened.')"
+  ></button>
+
+  <button
+    [innerHTML]="'warning' | titlecase"
+    class="btn btn-warning me-2"
+    (click)="uiNotifier.warning('Warning! But not an error! Just a warning!')"
+  ></button>
+
+  <button
+    [innerHTML]="'error' | titlecase"
+    class="btn btn-danger me-2"
+    (click)="uiNotifier.error('Whoops, something went wrong. Probably.')"
+  ></button>
+
+  <hr />
+
+  <h6>Hide (all | oldest | newest) notifications!</h6>
+
+  <button
+    (click)="uiNotifier.hideAll()"
+    [innerHTML]="'Hide all'"
+    class="btn btn-default border-dark me-2"
+  ></button>
+
+  <button
+    (click)="uiNotifier.hideOldest()"
+    [innerHTML]="'Hide oldest'"
+    class="btn btn-default border-dark me-2"
+  ></button>
+
+  <button
+    (click)="uiNotifier.hideNewest()"
+    [innerHTML]="'Hide newest'"
+    class="btn btn-default border-dark me-2"
+  ></button>
+
+  <hr />
+
+  <h6>Show & hide a specific notification with ID named 'ID_TEST'</h6>
+
+  <button
+    (click)="uiNotifier.show('Hello, you lovely person!', 'ID_TEST')"
+    class="btn btn-default border-dark me-2"
+    [innerHTML]="'Show'"
+  ></button>
+
+  <button
+    (click)="uiNotifier.hide('ID_TEST')"
+    [innerHTML]="'Hide'"
+    class="btn btn-default border-dark me-2"
+  ></button>
+
+  <hr />
+
+  <h6>Custom Notification</h6>
+
+  <button
+    (click)="showCustomNotification()"
+    [innerHTML]="'Custom'"
+    class="btn btn-default border-dark me-2"
+  ></button>
+</div>
+
+<ng-template #customAlertNotificationTpl let-notificationData="notification">
+  <p class="notifier__notification-message">
+    <i class="fa fa-check text-success"></i>&nbsp;&nbsp;<span
+      [innerHTML]="notificationData.message"
+    ></span>
+  </p>
+
+  <!--
+  <button type="button" title="dismiss"
+          class="notifier__notification-button btn btn-default border-dark me-2"
+          (click)="uiNotifier.hide(notificationData.id)"
+          *ngIf="uiNotifier.canShowDismissButton()">
+    <i class="fa fa-close"></i>
+  </button>
+  -->
+</ng-template>
+
+<!--
+  ---------------------------------------------------------------------------------------------
+-->
+
+<hr />

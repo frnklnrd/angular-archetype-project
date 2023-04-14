@@ -1,0 +1,81 @@
+{
+  "app": {
+    "books": {
+      "form": {
+        "title": "Título"
+      },
+      "table": {
+        "title": {
+          "actions": "Acciones",
+          "authors": "Autores",
+          "isbn": "ISBN",
+          "price": "Precio",
+          "published": "Publicado en",
+          "rating": "Valoración",
+          "title": "Título"
+        }
+      }
+    },
+    "dashboard": {
+      "content": {
+        "greetings": "DASHBOARD FUNCIONA !!!"
+      }
+    },
+    "errors": {
+      "titleStartsWithAbc": "{{ label }} no debe comenzar con 'abc'."
+    },
+    "login": {
+      "provider": {
+        "LARAVEL9": {
+          "title": "Laravel"
+        },
+        "MOCKED_USER_DATA": {
+          "title": "Mocked"
+        },
+        "OAUTH2_KEYCLOAK": {
+          "title": "Keycloak"
+        },
+        "OAUTH2_SOCIAL_FACEBOOK": {
+          "title": "Facebook"
+        },
+        "OAUTH2_SOCIAL_GOOGLE": {
+          "title": "Google"
+        },
+        "SUITECRM7_V8": {
+          "title": "SuiteCRM"
+        }
+      }
+    }
+  },
+  "ui": {
+    "datatable": {
+      "attributes": {
+        "#": "<b>No.</b>"
+      },
+      "footer": {
+        "currentOfTotal": "{{current}} de {{total}}",
+        "itemsSelected": "seleccionados: {{selected}}",
+        "showSize": "Mostrar:"
+      }
+    },
+    "dynamicForm": {
+      "arrays": {
+        "actions_btn_add_lbl": "Adicionar",
+        "actions_btn_insert_lbl": "Insertar",
+        "actions_btn_remove_lbl": "Eliminar"
+      }
+    },
+    "errors": {
+      "maxlength": "Máxima longitud requerida de {{ requiredLength }}.",
+      "minlength": "Mínima longitud requerida de {{ requiredLength }}.",
+      "required": "{{ label }} es requerido."
+    },
+    "template": {
+      "defaultLayout": {
+        "activatedLanguage": {
+          "success": "Idioma Seleccionado [{{language}}]"
+        }
+      }
+    }
+  }
+}

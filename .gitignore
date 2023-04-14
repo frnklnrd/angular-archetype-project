@@ -40,6 +40,8 @@ chrome-profiler-events*.json
 # Miscellaneous
 
 /.angular/cache
+.angular
+
 /.sass-cache
 .sass-cache/
 /connect.lock
@@ -55,5 +57,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Environment Local File
 
-.angular
+.env.local
+

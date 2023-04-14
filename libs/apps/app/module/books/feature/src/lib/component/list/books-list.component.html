@@ -1,0 +1,18 @@
+<app-layout-page-box>
+  <app-layout-navbar-box>
+    <button class="btn btn-primary" (click)="goToAdd()">
+      <i class="fa fa-plus-circle"></i> Add Book
+    </button>
+  </app-layout-navbar-box>
+
+  <app-layout-panel-box [customClasses]="'table-responsive'">
+    <app-books-table
+      [pagedDataSettings]="pagedData"
+      (paged)="onPage($event)"
+      (sorted)="onSort($event)"
+      (selected)="onSelect($event)"
+      (init)="registerChild('books-table', $event)"
+    >
+    </app-books-table>
+  </app-layout-panel-box>
+</app-layout-page-box>

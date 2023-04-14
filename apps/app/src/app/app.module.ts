@@ -1,123 +1,39 @@
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgModule } from '@angular/core';
-import {
-  HashLocationStrategy,
-  LocationStrategy,
-} from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
-
-import {
-  PERFECT_SCROLLBAR_CONFIG,
-  PerfectScrollbarConfigInterface,
-  ExtNgxPerfectScrollbarModule,
-} from '@app/ext/ngx-perfect-scrollbar';
 
 // Import routing module
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app.routing.module';
 
 // Import app component
 import { AppComponent } from './app.component';
 
-// Import containers
 import {
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
-  DefaultLayoutComponent,
-} from './containers';
+  AppsAppCoreModule,
+} from '@app/apps/app/base/api';
 
-import {
-  AvatarModule,
-  BadgeModule,
-  BreadcrumbModule,
-  ButtonGroupModule,
-  ButtonModule,
-  CardModule,
-  DropdownModule,
-  FooterModule,
-  FormModule,
-  GridModule,
-  HeaderModule,
-  ListGroupModule,
-  NavModule,
-  ProgressModule,
-  SharedModule,
-  SidebarModule,
-  TabsModule,
-  UtilitiesModule,
-} from '@coreui/angular';
-
-import { IconModule, IconSetService } from '@coreui/icons-angular';
-
-import { APP_VERSION } from './config/app.vars';
-import { appVersion } from './config/app.version';
-import { BackButtonDisableModule } from '@app/ext/angular-disable-browser-back-button';
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-};
-
-const APP_CONTAINERS = [
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
-  DefaultLayoutComponent,
-];
+import { AppConfigModule } from './config/app.config.module';
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS],
+  declarations: [AppComponent],
   imports: [
     // ---------------------------------
     BrowserModule,
     BrowserAnimationsModule,
-    // ---------------------------------
+    // --------------------------------
     AppRoutingModule,
-    // ---------------------------------
-    ReactiveFormsModule,
-    // ---------------------------------
-    AvatarModule,
-    BreadcrumbModule,
-    FooterModule,
-    DropdownModule,
-    GridModule,
-    HeaderModule,
-    SidebarModule,
-    IconModule,
-    // ---------------------------------
-    ExtNgxPerfectScrollbarModule,
-    // ---------------------------------
-    NavModule,
-    ButtonModule,
-    FormModule,
-    UtilitiesModule,
-    ButtonGroupModule,
-    SidebarModule,
-    SharedModule,
-    TabsModule,
-    ListGroupModule,
-    ProgressModule,
-    BadgeModule,
-    ListGroupModule,
-    CardModule,
-    // ---------------------------------
-    BackButtonDisableModule.forRoot({
-      preserveScrollPosition: true,
-    }),
-    // ---------------------------------
+    // --------------------------------
+    AppConfigModule,
+    // --------------------------------
+    AppsAppCoreModule,
+    // --------------------------------
   ],
   providers: [
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy,
     },
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
-    },
-    {
-      provide: APP_VERSION,
-      useValue: appVersion,
-    },
-    IconSetService,
     Title,
   ],
   bootstrap: [AppComponent],

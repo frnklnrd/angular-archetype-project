@@ -17,11 +17,175 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "paths": {
+      "@app/apps/app/base/api": ["libs/apps/app/base/api/src/index.ts"],
+      "@app/apps/app/base/domain": ["libs/apps/app/base/domain/src/index.ts"],
+      "@app/apps/app/base/feature": ["libs/apps/app/base/feature/src/index.ts"],
+      "@app/apps/app/base/layout": ["libs/apps/app/base/layout/src/index.ts"],
+      "@app/apps/app/base/store": ["libs/apps/app/base/store/src/index.ts"],
+      "@app/apps/app/base/ui": ["libs/apps/app/base/ui/src/index.ts"],
+      "@app/apps/app/module/books/domain": [
+        "libs/apps/app/module/books/domain/src/index.ts"
+      ],
+      "@app/apps/app/module/books/feature": [
+        "libs/apps/app/module/books/feature/src/index.ts"
+      ],
+      "@app/apps/app/module/books/store": [
+        "libs/apps/app/module/books/store/src/index.ts"
+      ],
+      "@app/apps/app/module/books/ui": [
+        "libs/apps/app/module/books/ui/src/index.ts"
+      ],
+      "@app/apps/app/module/dashboard/feature": [
+        "libs/apps/app/module/dashboard/feature/src/index.ts"
+      ],
+      "@app/apps/app/module/demo/feature": [
+        "libs/apps/app/module/demo/feature/src/index.ts"
+      ],
+      "@app/apps/app/module/home/feature": [
+        "libs/apps/app/module/home/feature/src/index.ts"
+      ],
+      "@app/core/api": ["libs/core/api/src/index.ts"],
+      "@app/core/auth/api": ["libs/core/auth/api/src/index.ts"],
+      "@app/core/auth/guard/default": [
+        "libs/core/auth/guard/default/src/index.ts"
+      ],
+      "@app/core/auth/interceptor/default": [
+        "libs/core/auth/interceptor/default/src/index.ts"
+      ],
+      "@app/core/auth/manager/api": ["libs/core/auth/manager/api/src/index.ts"],
+      "@app/core/auth/manager/default": [
+        "libs/core/auth/manager/default/src/index.ts"
+      ],
+      "@app/core/auth/provider/api": [
+        "libs/core/auth/provider/api/src/index.ts"
+      ],
+      "@app/core/auth/provider/laravel9": [
+        "libs/core/auth/provider/laravel9/src/index.ts"
+      ],
+      "@app/core/auth/provider/mocked-user-data": [
+        "libs/core/auth/provider/mocked-user-data/src/index.ts"
+      ],
+      "@app/core/auth/provider/oauth2-keycloak": [
+        "libs/core/auth/provider/oauth2-keycloak/src/index.ts"
+      ],
+      "@app/core/auth/provider/oauth2-social-facebook": [
+        "libs/core/auth/provider/oauth2-social-facebook/src/index.ts"
+      ],
+      "@app/core/auth/provider/oauth2-social-google": [
+        "libs/core/auth/provider/oauth2-social-google/src/index.ts"
+      ],
+      "@app/core/auth/provider/suitecrm7-api-v8": [
+        "libs/core/auth/provider/suitecrm7-api-v8/src/index.ts"
+      ],
+      "@app/core/auth/store/action": [
+        "libs/core/auth/store/action/src/index.ts"
+      ],
+      "@app/core/auth/store/model": ["libs/core/auth/store/model/src/index.ts"],
+      "@app/core/auth/store/state": ["libs/core/auth/store/state/src/index.ts"],
+      "@app/core/ddd/api": ["libs/core/ddd/api/src/index.ts"],
+      "@app/core/flow/api": ["libs/core/flow/api/src/index.ts"],
+      "@app/core/flow/manager": ["libs/core/flow/manager/src/index.ts"],
+      "@app/core/flow/store/action": [
+        "libs/core/flow/store/action/src/index.ts"
+      ],
+      "@app/core/flow/store/model": ["libs/core/flow/store/model/src/index.ts"],
+      "@app/core/flow/store/state": ["libs/core/flow/store/state/src/index.ts"],
+      "@app/core/loader/manager": ["libs/core/loader/manager/src/index.ts"],
+      "@app/core/loader/store/action": [
+        "libs/core/loader/store/action/src/index.ts"
+      ],
+      "@app/core/loader/store/model": [
+        "libs/core/loader/store/model/src/index.ts"
+      ],
+      "@app/core/loader/store/state": [
+        "libs/core/loader/store/state/src/index.ts"
+      ],
+      "@app/core/menu/api": ["libs/core/menu/api/src/index.ts"],
+      "@app/core/menu/manager": ["libs/core/menu/manager/src/index.ts"],
+      "@app/core/menu/store/action": [
+        "libs/core/menu/store/action/src/index.ts"
+      ],
+      "@app/core/menu/store/model": ["libs/core/menu/store/model/src/index.ts"],
+      "@app/core/menu/store/state": ["libs/core/menu/store/state/src/index.ts"],
+      "@app/core/translation/manager": [
+        "libs/core/translation/manager/src/index.ts"
+      ],
+      "@app/core/translation/store/action": [
+        "libs/core/translation/store/action/src/index.ts"
+      ],
+      "@app/core/translation/store/model": [
+        "libs/core/translation/store/model/src/index.ts"
+      ],
+      "@app/core/translation/store/state": [
+        "libs/core/translation/store/state/src/index.ts"
+      ],
       "@app/ext/angular-disable-browser-back-button": [
         "libs/ext/angular-disable-browser-back-button/src/index.ts"
       ],
       "@app/ext/ngx-perfect-scrollbar": [
         "libs/ext/ngx-perfect-scrollbar/src/index.ts"
+      ],
+      "@app/native/barcode-scanner": [
+        "libs/native/barcode-scanner/src/index.ts"
+      ],
+      "@app/native/camera": ["libs/native/camera/src/index.ts"],
+      "@app/native/device": ["libs/native/device/src/index.ts"],
+      "@app/native/facebook-login": ["libs/native/facebook-login/src/index.ts"],
+      "@app/native/google-login": ["libs/native/google-login/src/index.ts"],
+      "@app/native/photo-gallery": ["libs/native/photo-gallery/src/index.ts"],
+      "@app/native/qr-scanner": ["libs/native/qr-scanner/src/index.ts"],
+      "@app/ui/datatable/api": ["libs/ui/datatable/api/src/index.ts"],
+      "@app/ui/datatable/default": ["libs/ui/datatable/default/src/index.ts"],
+      "@app/ui/dynamic-forms/default": [
+        "libs/ui/dynamic-forms/default/src/index.ts"
+      ],
+      "@app/ui/modal/default": ["libs/ui/modal/default/src/index.ts"],
+      "@app/ui/notification/default": [
+        "libs/ui/notification/default/src/index.ts"
+      ],
+      "@app/ui/resize-observer/default": [
+        "libs/ui/resize-observer/default/src/index.ts"
+      ],
+      "@app/util/code/validation": ["libs/util/code/validation/src/index.ts"],
+      "@app/util/crypto/manager": ["libs/util/crypto/manager/src/index.ts"],
+      "@app/util/dotenv/manager": ["libs/util/dotenv/manager/src/index.ts"],
+      "@app/util/logger/manager": ["libs/util/logger/manager/src/index.ts"],
+      "@app/util/storage/local": ["libs/util/storage/local/src/index.ts"],
+      "@app/util/storage/session": ["libs/util/storage/session/src/index.ts"],
+      "@app/util/uuid/manager": ["libs/util/uuid/manager/src/index.ts"],
+      "@app/vendor/api-client/book-monkey-v4": [
+        "libs/vendor/api-client/book-monkey-v4/src/index.ts"
+      ],
+      "@app/vendor/api-client/laravel9": [
+        "libs/vendor/api-client/laravel9/src/index.ts"
+      ],
+      "@app/vendor/api-client/suitecrm7-v8": [
+        "libs/vendor/api-client/suitecrm7-v8/src/index.ts"
+      ],
+      "@app/vendor/bootstrap/ngx-bootstrap": [
+        "libs/vendor/bootstrap/ngx-bootstrap/src/index.ts"
+      ],
+      "@app/vendor/datatable/ngx-datatable": [
+        "libs/vendor/datatable/ngx-datatable/src/index.ts"
+      ],
+      "@app/vendor/dynamic-form/ng-dynamic-forms": [
+        "libs/vendor/dynamic-form/ng-dynamic-forms/src/index.ts"
+      ],
+      "@app/vendor/fontawesome/ngx-font-awesome": [
+        "libs/vendor/fontawesome/ngx-font-awesome/src/index.ts"
+      ],
+      "@app/vendor/layout/coreui": ["libs/vendor/layout/coreui/src/index.ts"],
+      "@app/vendor/native/capacitor": [
+        "libs/vendor/native/capacitor/src/index.ts"
+      ],
+      "@app/vendor/notification/angular-notifier": [
+        "libs/vendor/notification/angular-notifier/src/index.ts"
+      ],
+      "@app/vendor/select/ng-select": [
+        "libs/vendor/select/ng-select/src/index.ts"
+      ],
+      "@app/vendor/translation/ngx-translate": [
+        "libs/vendor/translation/ngx-translate/src/index.ts"
       ]
     }
   },

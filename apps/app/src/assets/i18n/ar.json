@@ -1,0 +1,81 @@
+{
+  "app": {
+    "books": {
+      "form": {
+        "title": "لقب"
+      },
+      "table": {
+        "title": {
+          "actions": "Actions",
+          "authors": "Authors",
+          "isbn": "ISBN",
+          "price": "Price",
+          "published": "Published At",
+          "rating": "Rating",
+          "title": "Title"
+        }
+      }
+    },
+    "dashboard": {
+      "content": {
+        "greetings": "يعمل لوحة القيادة !!!"
+      }
+    },
+    "errors": {
+      "titleStartsWithAbc": "{{ label }} must not start with 'abc'."
+    },
+    "login": {
+      "provider": {
+        "LARAVEL9": {
+          "title": "Laravel"
+        },
+        "MOCKED_USER_DATA": {
+          "title": "Mocked"
+        },
+        "OAUTH2_KEYCLOAK": {
+          "title": "Keycloak"
+        },
+        "OAUTH2_SOCIAL_FACEBOOK": {
+          "title": "Facebook"
+        },
+        "OAUTH2_SOCIAL_GOOGLE": {
+          "title": "Google"
+        },
+        "SUITECRM7_V8": {
+          "title": "SuiteCRM"
+        }
+      }
+    }
+  },
+  "ui": {
+    "datatable": {
+      "attributes": {
+        "#": "<b>#</b>"
+      },
+      "footer": {
+        "currentOfTotal": "{{current}} من {{total}}",
+        "itemsSelected": "المحدد: {{selected}}",
+        "showSize": "تبين:"
+      }
+    },
+    "dynamicForm": {
+      "arrays": {
+        "actions_btn_add_lbl": "Add",
+        "actions_btn_insert_lbl": "Insert",
+        "actions_btn_remove_lbl": "Remove"
+      }
+    },
+    "errors": {
+      "maxlength": "Max length required is {{ requiredLength }}.",
+      "minlength": "Min length required is {{ requiredLength }}.",
+      "required": "{{ label }} is required."
+    },
+    "template": {
+      "defaultLayout": {
+        "activatedLanguage": {
+          "success": "تنشيط اللغة [{{language}}]"
+        }
+      }
+    }
+  }
+}

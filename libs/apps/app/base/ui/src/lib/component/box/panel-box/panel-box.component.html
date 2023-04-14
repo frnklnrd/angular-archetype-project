@@ -1,0 +1,24 @@
+<c-card class="mb-4 code-layout-panel-box">
+  <c-card-body>
+    <div [class]="customClasses">
+      <div [class.ml-auto]="(isTextDirectionInverted$ | async) === false"
+           [class.mr-auto]="(isTextDirectionInverted$ | async) === true">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </c-card-body>
+</c-card>
+
+<!-- 
+  <c-card class="mb-4">
+  <c-card-header>
+    <strong>Angular Accordion</strong> flush
+  </c-card-header>
+  <c-card-body>
+    <ng-content></ng-content>
+  </c-card-body>
+</c-card>
+<c-callout class="bg-white:dark:bg-transparent" [color]="'info'">
+  <ng-content></ng-content>
+</c-callout>
+-->

@@ -1,0 +1,58 @@
+<app-layout-page-box>
+
+  <app-layout-navbar-box [customClasses]="''">
+
+    <ul class='nav nav-pills nav-fill'>
+
+      <li class='nav-item ms-2 me-2' [class.active]="step==='step1'">
+        <a class='nav-link' href='javascript:void(0)'
+           [class.active]="step==='step1'"
+           [class.disabled]="step==='step1'"
+           (click)="goToStep('step1')">
+          <i class='fa fa-address-card'></i> Fill Personal Information
+        </a>
+      </li>
+      <li class='nav-item ms-2 me-2' [class.active]="step==='step2'">
+        <a class='nav-link' href='javascript:void(0)'
+           [class.active]="step==='step2'"
+           [class.disabled]="step==='step2'"
+           (click)="goToStep('step2')">
+          <i class='fa fa-building'></i> Select Transport
+        </a>
+      </li>
+      <li class='nav-item ms-2 me-2' [class.active]="step==='step3'">
+        <a class='nav-link' href='javascript:void(0)'
+           [class.active]="step==='step3'"
+           [class.disabled]="step==='step3'"
+           (click)="goToStep('step3')">
+          <i class='fa fa-check'></i> Confirm & Save
+        </a>
+      </li>
+    </ul>
+  </app-layout-navbar-box>
+
+  <app-layout-panel-box>
+
+    <ng-container *ngIf="showForm">
+
+      <div class='row'>
+          <app-book-add-edit-form [editable]='formEditable'
+                                  [markAllAsReadOnly]='markAllAsReadOnly'
+                                  (formGroupCreated)='onFormGroupCreated($event)'>
+          </app-book-add-edit-form>
+      </div>
+
+      <div class='row'>
+        <div class='col-md-12'>
+          <button class='btn btn-outline-success me-2' (click)='onClickFormEnabledDisabled(true)'>FORM ENABLED</button>
+          <button class='btn btn-outline-danger me-2' (click)='onClickFormEnabledDisabled(false)'>FORM DISABLED</button>
+          <button class='btn btn-outline-warning me-2' (click)='onClickSomeEnabledDisabled(true)'>SOME ENABLED</button>
+          <button class='btn btn-outline-success me-2' (click)='onClickSomeEnabledDisabled(false)'>SOME DISABLED</button>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </app-layout-panel-box>
+
+</app-layout-page-box>

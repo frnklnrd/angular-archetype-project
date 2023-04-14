@@ -1,0 +1,302 @@
+<ng-container *ngIf="_formGroup && _isFormGroupCreated && _isFormModelUpdated && _isFormLayoutUpdated">
+
+  <ng-container *ngIf="!customFormTpl">
+
+    <div [class]="defaultFormLayout.container"
+         [class.dynamic-form-custom-show-default-errors-tpl]="showDefaultErrorsTpl"
+         style="padding: 0px;">
+
+      <dynamic-ngx-bootstrap-form #dynamicFormComponent
+                                  [class]="defaultFormLayout.group"
+                                  [layout]="_formLayout"
+                                  [group]="_formGroup"
+                                  [model]="_formModel"
+                                  (blur)="onBlur($event)"
+                                  (change)="onChange($event)"
+                                  (focus)="onFocus($event)"
+                                  (bsEvent)="onBsEvent($event)">
+
+        <!-- --------------------------------------------------------------------------- -->
+
+        <!-- MODEL ID START & END CUSTOM TEMPLATES ----------------------------------------------------------------- -->
+
+        <ng-container *ngFor="let controlModel of _formModel; index as i">
+
+          <!-- ALIGN: START ------------------------ -->
+
+          <ng-template modelId="{{ controlModel.id }}"
+                       align="START"
+                       let-id="id"
+                       let-group="group"
+                       let-index="index"
+                       let-context="context">
+
+            <!-- IF CUSTOM TEMPLATE IS PROVIDED - START ------------------------ -->
+
+            <ng-container *ngFor="let modelTpl of customModelControlsTpl; index as i">
+
+              <ng-container *ngIf="controlModel.id === modelTpl['modelId'] && modelTpl['align'] === 'START'"
+                            [ngTemplateOutlet]="modelTpl['template']"
+                            [ngTemplateOutletContext]="{
+                                id: id,
+                                align: modelTpl['align'],
+                                group: group,
+                                index: index,
+                                context: context,
+                                removeFormArrayItemFn: removeFormArrayItem.bind(this),
+                                insertFormArrayItemFn: insertFormArrayItem.bind(this),
+                                addFormArrayItemFn: addFormArrayItem.bind(this)
+                            }">
+              </ng-container>
+
+            </ng-container>
+
+            <!-- IF CUSTOM TEMPLATE IS PROVIDED - END ------------------------ -->
+
+          </ng-template>
+
+          <!-- ------------------------ -->
+
+          <!-- ALIGN: END ------------------------ -->
+
+          <ng-template modelId="{{ controlModel.id }}"
+                       align="END"
+                       let-id="id"
+                       let-group="group"
+                       let-index="index"
+                       let-context="context">
+
+            <!-- IF CUSTOM TEMPLATE IS PROVIDED BY MODEL-ID ------------------------ -->
+
+            <ng-container *ngFor="let modelTpl of customModelControlsTpl; index as i">
+
+              <ng-container *ngIf="controlModel.id === modelTpl['modelId'] && modelTpl['align'] !== 'START'"
+                            [ngTemplateOutlet]="modelTpl['template']"
+                            [ngTemplateOutletContext]="{
+                                id: id,
+                                align: 'END',
+                                group: group,
+                                index: index,
+                                context: context,
+                                removeFormArrayItemFn: removeFormArrayItem.bind(this),
+                                insertFormArrayItemFn: insertFormArrayItem.bind(this),
+                                addFormArrayItemFn: addFormArrayItem.bind(this)
+                            }">
+              </ng-container>
+
+            </ng-container>
+
+            <!-- IF CUSTOM TEMPLATE IS PROVIDED BY MODEL-TYPE ------------------------ -->
+
+            <ng-container *ngIf="!thereIsSomeModelControlEndTplWithSameId(customModelControlsTpl, controlModel)">
+
+              <ng-container *ngFor="let modelTpl of customModelControlsTpl; index as i">
+
+                <ng-container *ngIf="controlModel.type === modelTpl['modelType']"
+                              [ngTemplateOutlet]="modelTpl['template']"
+                              [ngTemplateOutletContext]="{
+                                id: id,
+                                align: 'END',
+                                group: group,
+                                index: index,
+                                context: context,
+                                removeFormArrayItemFn: removeFormArrayItem.bind(this),
+                                insertFormArrayItemFn: insertFormArrayItem.bind(this),
+                                addFormArrayItemFn: addFormArrayItem.bind(this)
+                            }">
+                </ng-container>
+
+              </ng-container>
+
+              <!-- MODEL-TYPE: ARRAY CUSTOM ------------------------ -->
+
+              <ng-container *ngIf="!thereIsSomeModelControlTplWithSameType(customModelControlsTpl, controlModel)
+                                    && controlModel.type==='ARRAY' && showDefaultArraysEndTpl">
+                <div [class]="defaultFormArrayEndTplLayout.classes.actions_container">
+                  <label [class]="defaultFormArrayEndTplLayout.classes.actions_label">&nbsp;</label>
+                  <div [class]="defaultFormArrayEndTplLayout.classes.actions_text_align">
+                    <button *ngIf="defaultFormArrayEndTplLayout.behaviors.show_actions_btn_insert
+                             && context.groups.length !== index + 1"
+                            type="button"
+                            [class]="defaultFormArrayEndTplLayout.classes.actions_btn_insert"
+                            (click)="insertFormArrayItem(context.id, context, index + 1)">
+                      <i [class]="defaultFormArrayEndTplLayout.classes.actions_btn_insert_icon"></i>
+                      {{ defaultFormArrayEndTplLayout.labels.actions_btn_insert | translate }}
+                    </button>
+                    <button *ngIf="defaultFormArrayEndTplLayout.behaviors.show_actions_btn_add
+                             && context.groups.length === index + 1"
+                            type="button"
+                            [class]="defaultFormArrayEndTplLayout.classes.actions_btn_add"
+                            (click)="addFormArrayItem(context.id, context)">
+                      <i [class]="defaultFormArrayEndTplLayout.classes.actions_btn_add_icon"></i>
+                      {{ defaultFormArrayEndTplLayout.labels.actions_btn_add | translate }}
+                    </button>
+                    <button *ngIf="defaultFormArrayEndTplLayout.behaviors.show_actions_btn_remove"
+                            type="button"
+                            [class]="defaultFormArrayEndTplLayout.classes.actions_btn_remove"
+                            [disabled]="defaultFormArrayEndTplLayout.behaviors.disable_action_btn_remove_in_only_item
+                                  && context.groups.length === 1"
+                            (click)="removeFormArrayItem(context.id, context, index)">
+                      <i [class]="defaultFormArrayEndTplLayout.classes.actions_btn_remove_icon"></i>
+                      {{ defaultFormArrayEndTplLayout.labels.actions_btn_remove | translate }}
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngIf="defaultFormArrayEndTplLayout.behaviors.show_hr_line_between_items
+                            && context.groups.length !== index + 1"
+                     class="col-xs-12 col-sm-12">
+                  <hr style="width: 100%"/>
+                </div>
+                <div *ngIf="defaultFormArrayEndTplLayout.behaviors.show_hr_line_in_last_item
+                            && context.groups.length === index + 1"
+                     class="col-xs-12 col-sm-12">
+                  <hr style="width: 100%"/>
+                </div>
+
+              </ng-container>
+
+            </ng-container>
+
+            <!-- ------------------------ -->
+
+            <!-- ERRORS TEMPLATE ------------------------ -->
+
+            <ng-container *ngIf="showDefaultErrorsTpl">
+
+              <ng-container *ngIf="_formGroup.get(controlModel.id)
+                                   && _formGroup.get(controlModel.id)?.errors">
+
+                <ng-container *ngIf="_formGroup?.get(controlModel.id)?.touched
+                                      || _formGroup?.get(controlModel.id)?.dirty">
+
+                  <p [class]="defaultFormErrorsTplLayout.classes.container">
+
+                    <ng-container *ngFor="let error of getControlModelErrorsAsArray(controlModel); index as errorIndex">
+
+                      <small [class]="defaultFormErrorsTplLayout.classes.message"
+                             [class.mt-0]="errorIndex ===0"
+                             [class.mt-2]="errorIndex !==0">
+                        {{ (error.customError && error.customMessage ?
+                        error.customMessage : 'ui.errors.' + error.code)
+                        | translate : error.params }}
+                      </small>
+
+                    </ng-container>
+
+                  </p>
+
+                </ng-container>
+
+              </ng-container>
+
+            </ng-container>
+
+            <!-- ERRORS TEMPLATE ------------------------ -->
+
+          </ng-template>
+
+        </ng-container>
+
+        <!-- --------------------------------------------------------------------------- -->
+
+        <!-- MODEL TYPE CUSTOM TEMPLATES --------------------------------------------------------------------------- -->
+
+        <!-- MODEL-TYPE ------------------------ -->
+
+
+        <!-- ------------------------ -->
+
+        <!-- MODEL: ARRAY CUSTOM ------------------------ -->
+
+
+        <!-- ------------------------ -->
+
+        <!-- --------------------------------------------------------------------------- -->
+
+      </dynamic-ngx-bootstrap-form>
+
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="customFormTpl">
+    <ng-container [ngTemplateOutlet]="customFormTpl"
+                  [ngTemplateOutletContext]="{
+                        layout: _formLayout,
+                        group: _formGroup,
+                        model: _formModel,
+                        events: {
+                            onBlur: onBlur.bind(this),
+                            onChange: onChange.bind(this),
+                            onFocus: onFocus.bind(this),
+                            onBsEvent: onBsEvent.bind(this)
+                        }
+                   }"
+    >
+    </ng-container>
+  </ng-container>
+
+</ng-container>
+
+<!--
+<ng-container *ngIf="_formGroup && _isFormGroupCreated && _isFormModelUpdated && _isFormLayoutUpdated">
+
+  <ng-container *ngIf="!customFormTpl">
+
+    <div class="container-fluid" style="padding: 0px;">
+      <div class="row">
+        <ng-container *ngFor="let _controlModel of _formModel">
+
+          <dynamic-ngx-bootstrap-form-control [group]="_formGroup"
+                                              [layout]="_formLayout"
+                                              [model]="_controlModel"
+                                              (blur)="onBlur($event)"
+                                              (change)="onChange($event)"
+                                              (focus)="onFocus($event)"
+                                              (bsEvent)="onBsEvent($event)">
+
+            <ng-container *ngFor="let modelTpl of customModelControlsTpl; index as i">
+
+              <ng-container *ngIf="_controlModel.id === modelTpl.modelId && modelTpl.align">
+                <ng-template modelId="{{ modelTpl.modelId }}"
+                             align="{{ modelTpl.align }}"
+                             let-group
+                             let-index="index"
+                             let-context="context">
+                  <ng-container [ngTemplateOutlet]="modelTpl.template"
+                                [ngTemplateOutletContext]="{
+                          group: group,
+                          index: index,
+                          context: context
+                      }">
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+
+              <ng-container *ngIf="_controlModel.id === modelTpl.modelId && !modelTpl.align">
+                <ng-template modelId="{{ modelTpl.modelId }}"
+                             let-group="group"
+                             let-index="index"
+                             let-context="context">
+                  <ng-container [ngTemplateOutlet]="modelTpl.template"
+                                [ngTemplateOutletContext]="{
+                          group: group,
+                          index: index,
+                          context: context
+                      }">
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+
+            </ng-container>
+          </dynamic-ngx-bootstrap-form-control>
+
+        </ng-container>
+      </div>
+    </div>
+
+  </ng-container>
+
+</ng-container>
+-->

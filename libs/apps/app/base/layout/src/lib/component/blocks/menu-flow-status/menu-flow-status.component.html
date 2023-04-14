@@ -1,0 +1,50 @@
+<div class="menu-flow-status-wrapper">
+  <c-nav>
+    <c-nav-item>
+      <a
+        href="javascript:void(0)"
+        cNavLink
+        [disabled]="(isUserLogged$ | async) === true"
+        (click)="onClickLogin()"
+      >
+        <svg cIcon [name]="'cilUser'" size="sm"></svg>
+      </a>
+    </c-nav-item>
+
+    <c-nav-item>
+      <a
+        href="javascript:void(0)"
+        cNavLink
+        [disabled]="(isUserLogged$ | async) === false"
+        (click)="onClickLogout()"
+      >
+        <svg cIcon [name]="'cilAccountLogout'" size="sm"></svg>
+      </a>
+    </c-nav-item>
+
+    <c-nav-item>
+      <a href="javascript:void(0)" cNavLink
+      (click)="onClickHome()">
+        <svg cIcon [name]="'cilHome'" size="sm"></svg>
+      </a>
+    </c-nav-item>
+
+    <c-nav-item>
+      <a href="javascript:void(0)" cNavLink 
+      (click)="onClickBackwardAction()"
+      [disabled]="(currentFlowStatus$ | async)?.flowActionCanBackward === false">
+        <svg cIcon [name]="'cilChevronDoubleLeft'" size="sm"></svg>
+      </a>
+    </c-nav-item>
+
+    <c-nav-item>
+      <a href="javascript:void(0)" cNavLink 
+      (click)="onClickCloseAction()"
+      [disabled]="(currentFlowStatus$ | async)?.flowActionCanClose === false"
+      >
+        <svg cIcon [name]="'cilXCircle'" size="sm"></svg>
+      </a>
+    </c-nav-item>
+
+  </c-nav>
+</div>

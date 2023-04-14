@@ -1,0 +1,896 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+import { inject, Injectable } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { AbstractService } from '@app/core/api';
+import { FlowActionModel, FlowStepModel } from '@app/core/flow/api';
+import {
+  FlowChangeCurrentStatusAction,
+  FlowRemoveLastActionFromStackAction,
+  FlowRemoveLastFlowStepInLastActionAction,
+  FlowResetStackAction,
+  FlowStackFlowActionAction,
+  FlowStackFlowStepInLastActionAction,
+} from '@app/core/flow/store/action';
+import { FlowStatusModel } from '@app/core/flow/store/model';
+import { FlowDataState } from '@app/core/flow/store/state';
+
+import { Store } from '@ngxs/store';
+import { Subscription } from 'rxjs';
+
+@Injectable()
+export class FlowManagerService extends AbstractService {
+  private processingFlowNavigation: boolean = false;
+
+  private subscription!: Subscription;
+
+  protected store: Store = inject<Store>(Store);
+
+  protected router: Router = inject<Router>(Router);
+
+  protected activatedRoute: ActivatedRoute =
+    inject<ActivatedRoute>(ActivatedRoute);
+
+  constructor() {
+    super();
+  }
+
+  // -----------------------------------------------------------------------
+
+  init(): void {
+    this.logger.console.debug(this.__classname, 'init');
+
+    if (!this.subscription) {
+      this.subscription = this.router.events.subscribe(($event) => {
+        if (!($event instanceof NavigationEnd)) {
+          return;
+        }
+
+        if (this.processingFlowNavigation) {
+          return;
+        }
+
+        this.logger.console.debug(this.__classname, 'NavigationEnd');
+
+        let route = this.activatedRoute.firstChild;
+
+        let child = route;
+
+        while (child) {
+          if (child.firstChild) {
+            child = child.firstChild;
+            route = child;
+          } else {
+            child = null;
+          }
+        }
+
+        this.logger.console.debug(this.__classname, 'route', route);
+
+        route?.data.subscribe((data: any) => {
+          this.logger.console.debug(this.__classname, 'route -> data', data);
+
+          const flowDataConfig = data?.flowData;
+
+          this.logger.console.debug(
+            this.__classname,
+            'flowDataConfig',
+            flowDataConfig
+          );
+
+          if (!flowDataConfig) {
+            this.logger.console.warn(
+              this.__classname,
+              'Navigation to [' +
+                $event.urlAfterRedirects +
+                '] without flow data info!!!'
+            );
+            return;
+          }
+
+          const realContextName = (
+            flowDataConfig.context ? flowDataConfig.context : ''
+          ).toLowerCase();
+          const realModuleName = (
+            flowDataConfig.module ? flowDataConfig.module : ''
+          ).toLowerCase();
+          const realActionName = (
+            flowDataConfig.action ? flowDataConfig.action : ''
+          ).toLowerCase();
+          const realStepName = (
+            flowDataConfig.step ? flowDataConfig.step : ''
+          ).toLowerCase();
+
+          const lastAction: FlowActionModel | null =
+            this.store.selectSnapshot<FlowActionModel | null>(
+              FlowDataState.getCurrentFlowAction
+            );
+
+          if (
+            realContextName === lastAction?.context &&
+            realModuleName === lastAction?.module &&
+            realActionName === lastAction?.action
+          ) {
+            return;
+          }
+
+          this.processNewFlowDataStatus(
+            {
+              context: realContextName,
+              module: realModuleName,
+              action: realActionName,
+              steps: [
+                {
+                  step: realStepName && realStepName !== '' ? realStepName : '',
+                  params: {},
+                  isCurrent: true,
+                  isFirst: true,
+                  isLast: true,
+                },
+              ],
+            },
+            {
+              context: realContextName,
+              module: realModuleName,
+              action: realActionName,
+
+              step: realStepName && realStepName !== '' ? realStepName : '',
+              stepParams: {},
+              stepIsFirst: true,
+              stepIsLast: true,
+
+              isReturned: false,
+              isReturnedConfirmed: false,
+              isReturnedCanceled: false,
+              isReturnedClosed: false,
+              isReturnedWithParams: null,
+
+              flowActionProcessed: 'open-action',
+            },
+            true
+          ).then();
+        });
+      });
+    }
+  }
+
+  // -----------------------------------------------------------------------
+
+  protected dispatchCurrentStatus(current: FlowStatusModel): void {
+    this.store
+      .dispatch(new FlowChangeCurrentStatusAction(current))
+      .subscribe(() => {
+        //
+      });
+  }
+
+  protected processNewFlowDataStatus(
+    flowActionData: any | null,
+    flowStatusData: any | null,
+    resetOthers: boolean = false
+  ): Promise<boolean> {
+    this.logger.console.debug(
+      this.__classname,
+      'processNewFlowDataStatus',
+      flowActionData,
+      flowStatusData,
+      resetOthers
+    );
+    if (flowActionData) {
+      const flowAction = this.createFlowAction(flowActionData);
+      this.stackFlowAction(flowAction, resetOthers);
+    }
+    if (flowStatusData) {
+      const flowStatus = this.createFlowStatus(flowStatusData);
+      this.dispatchCurrentStatus(flowStatus);
+    }
+    return Promise.resolve(true);
+  }
+
+  // -----------------------------------------------------------------------
+
+  private createFlowAction(data: FlowActionModel | any = {}): FlowActionModel {
+    this.logger.console.debug(this.__classname, 'createFlowAction', data);
+    return Object.assign<FlowActionModel, any>(
+      {
+        context: '',
+        module: '',
+        action: '',
+        steps: [
+          {
+            step: '',
+            params: null,
+            isCurrent: true,
+            isFirst: true,
+            isLast: true,
+          },
+        ],
+      },
+      data
+    );
+  }
+
+  private stackFlowAction(
+    flowAction: FlowActionModel | null,
+    resetOthers: boolean = false
+  ): void {
+    this.logger.console.debug(
+      this.__classname,
+      'stackFlowAction',
+      flowAction,
+      resetOthers
+    );
+    if (resetOthers) {
+      this.store.dispatch(new FlowResetStackAction(true)).subscribe(() => {
+        //
+      });
+    }
+    if (flowAction) {
+      this.store
+        .dispatch(new FlowStackFlowActionAction(flowAction))
+        .subscribe(() => {
+          //
+        });
+    }
+  }
+
+  private stackFlowStepInLastAction(flowStep: FlowStepModel | null): void {
+    this.logger.console.debug(
+      this.__classname,
+      'stackFlowStepInLastAction',
+      flowStep
+    );
+    if (flowStep) {
+      this.store
+        .dispatch(new FlowStackFlowStepInLastActionAction(flowStep))
+        .subscribe(() => {
+          //
+        });
+    }
+  }
+
+  private removeLastFlowStepInLastAction(remove: boolean = true): void {
+    this.logger.console.debug(
+      this.__classname,
+      'removeLastFlowStepInLastAction',
+      remove
+    );
+    if (remove) {
+      this.store
+        .dispatch(new FlowRemoveLastFlowStepInLastActionAction(true))
+        .subscribe(() => {
+          //
+        });
+    }
+  }
+
+  private createFlowStatus(data: FlowStatusModel | any = {}): FlowStatusModel {
+    this.logger.console.debug(this.__classname, 'createFlowStatus', data);
+    const flowStatus: FlowStatusModel = Object.assign<FlowStatusModel, any>(
+      {
+        context: '',
+        module: '',
+        action: '',
+
+        step: '',
+        stepParams: '',
+        stepIsFirst: true,
+        stepIsLast: true,
+
+        isHome: true,
+        isReturned: false,
+        isReturnedConfirmed: false,
+        isReturnedCanceled: false,
+        isReturnedClosed: false,
+        isReturnedWithParams: null,
+
+        flowActionProcessed: '',
+      },
+      data
+    );
+    const defaultContext = '';
+    const defaultModule = '';
+    const defaultAction = '';
+
+    return Object.assign<FlowStatusModel, any>(flowStatus, {
+      isHome:
+        flowStatus.context === defaultContext &&
+        flowStatus.module === defaultModule &&
+        flowStatus.action === defaultAction,
+    });
+  }
+
+  // -----------------------------------------------------------------------
+
+  private navigateToModuleActionStep(
+    context: string,
+    module: string,
+    action: string,
+    step: string | null = null,
+    params: any | null = {}
+  ): Promise<boolean> {
+    this.logger.console.debug(this.__classname, 'navigateToModuleActionStep', {
+      context,
+      module,
+      action,
+      step,
+      params,
+    });
+
+    if (context === null || module === null || action === null) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const contextPath = (
+      (context !== '' ? '/' : '') + context
+    ).toLocaleLowerCase();
+    const modulePath = (
+      (module !== '' ? '/' : '') + module
+    ).toLocaleLowerCase();
+    const actionPath = (
+      (action !== '' ? '/' : '') + action
+    ).toLocaleLowerCase();
+
+    const stepPath = ((step !== '' ? '/' : '') + step).toLocaleLowerCase();
+
+    const url = contextPath + modulePath + actionPath + stepPath;
+
+    const routeParams = Object.assign({}, params ? params : {});
+
+    this.logger.console.debug(
+      this.__classname,
+      'Navigate to URL',
+      url,
+      routeParams
+    );
+
+    if (url === '' || url === '/') {
+      return this.router.navigate(['']).then(
+        (executed) => {
+          if (executed) {
+            this.logger.console.debug(
+              this.__classname,
+              'Navigation Successfully Executed!!!',
+              url,
+              routeParams
+            );
+          }
+          return executed;
+        },
+        (error: any) => {
+          this.logger.console.error(this.__classname, error);
+          return false;
+        }
+      );
+    }
+
+    let parsedUrl = url;
+
+    Object.keys(routeParams).forEach((key) => {
+      if (parsedUrl.indexOf(':' + key) !== -1) {
+        parsedUrl = parsedUrl.replace(':' + key, routeParams[key]);
+        delete routeParams[key];
+      }
+    });
+
+    return this.router.navigate([parsedUrl, routeParams]).then(
+      (executed) => {
+        if (executed) {
+          this.logger.console.debug(
+            this.__classname,
+            'Navigation Successfully Executed!!!',
+            url,
+            routeParams
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  private removeLastActionAndNavigateToPreviousAction(
+    params: any | null = null,
+    returned: boolean = true,
+    closed: boolean = false,
+    canceled: boolean = false,
+    confirmed = false
+  ): Promise<boolean> {
+    const currentAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getCurrentFlowAction
+      );
+    if (!currentAction) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const previousAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getPreviousFlowAction
+      );
+
+    this.store
+      .dispatch(new FlowRemoveLastActionFromStackAction(true))
+      .subscribe(() => {
+        //
+      });
+
+    if (!previousAction) {
+      return Promise.resolve(false);
+    }
+
+    const previousCurrentStep: FlowStepModel | undefined =
+      previousAction?.steps?.find(
+        (previousStep: FlowStepModel, i) => previousStep.isCurrent
+      );
+
+    if (!previousCurrentStep) {
+      this.logger.console.error(this.__classname, 'Operation Error!!!');
+      return Promise.reject('Operation ERROR!!');
+    }
+
+    return this.navigateToModuleActionStep(
+      previousAction.context,
+      previousAction.module,
+      previousAction.action,
+      previousCurrentStep.step,
+      previousCurrentStep.params
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.dispatchCurrentStatus(
+            this.createFlowStatus({
+              context: previousAction.context,
+              module: previousAction.module,
+              action: previousAction.action,
+
+              step: previousCurrentStep.step,
+              stepParams: previousCurrentStep.params,
+              stepIsFirst: previousCurrentStep.isFirst,
+              stepIsLast: previousCurrentStep.isLast,
+
+              isReturned: returned,
+              isReturnedConfirmed: confirmed,
+              isReturnedCanceled: canceled,
+              isReturnedClosed: closed,
+              isReturnedWithParams: params,
+
+              flowActionProcessed: 'close-current-action',
+            })
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  // -----------------------------------------------------------------------
+
+  public startAction(
+    context: string,
+    module: string,
+    action: string | null = null,
+    step: string | null = null,
+    params: any | null = {},
+    resetOthers: boolean = false
+  ): Promise<boolean> {
+    this.logger.console.debug(this.__classname, 'startAction', {
+      context,
+      module,
+      action,
+      step,
+      params,
+      resetOthers,
+    });
+
+    const realContextName = (context ? context : '').toLowerCase();
+    const realModuleName = (module ? module : '').toLowerCase();
+    const realActionName = (action ? action : '').toLowerCase();
+    const realStepName = (step ? step : '').toLowerCase();
+
+    if (resetOthers) {
+      this.stackFlowAction(null, true);
+    }
+
+    this.processingFlowNavigation = true;
+
+    return this.navigateToModuleActionStep(
+      realContextName,
+      realModuleName,
+      realActionName,
+      realStepName,
+      params
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.processNewFlowDataStatus(
+            {
+              context: realContextName,
+              module: realModuleName,
+              action: realActionName,
+              steps: [
+                {
+                  step: realStepName && realStepName !== '' ? realStepName : '',
+                  params,
+                  isCurrent: true,
+                  isFirst: true,
+                  isLast: true,
+                },
+              ],
+            },
+            {
+              context: realContextName,
+              module: realModuleName,
+              action: realActionName,
+
+              step: realStepName && realStepName !== '' ? realStepName : '',
+              stepParams: params,
+              stepIsFirst: true,
+              stepIsLast: true,
+
+              isReturned: false,
+              isReturnedConfirmed: false,
+              isReturnedCanceled: false,
+              isReturnedClosed: false,
+              isReturnedWithParams: null,
+
+              flowActionProcessed: 'open-action',
+            },
+            resetOthers
+          ).then(() => {
+            setTimeout(() => {
+              this.processingFlowNavigation = false;
+            }, 300);
+          });
+        } else {
+          setTimeout(() => {
+            this.processingFlowNavigation = false;
+          }, 300);
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  public startStep(
+    context: string,
+    module: string,
+    action: string,
+    step: string,
+    params: any | null = {}
+  ): Promise<boolean> {
+    this.logger.console.debug(this.__classname, 'startStep', {
+      context,
+      module,
+      action,
+      step,
+      params,
+    });
+
+    const currentAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getCurrentFlowAction
+      );
+
+    this.logger.console.debug(this.__classname, 'currentAction', currentAction);
+
+    if (!currentAction) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const realContextName = (context ? context : '').toLowerCase();
+    const realModuleName = (module ? module : '').toLowerCase();
+    const realActionName = (action ? action : '').toLowerCase();
+    const realStepName = (step ? step : '').toLowerCase();
+
+    if (
+      currentAction.context !== realContextName ||
+      currentAction.module !== realModuleName ||
+      currentAction.action !== realActionName
+    ) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const currentStep: FlowStepModel | undefined = currentAction.steps.find(
+      (stepData: FlowStepModel, i) => stepData.isCurrent
+    );
+
+    if (currentStep) {
+      if (currentStep.step === realStepName) {
+        this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+        return Promise.reject('Operation Not Allowed!!!');
+      }
+    }
+
+    return this.navigateToModuleActionStep(
+      realContextName,
+      realModuleName,
+      realActionName,
+      realStepName,
+      params
+    )
+      .then(
+        (executed) => {
+          if (executed) {
+            if (executed) {
+              this.stackFlowStepInLastAction({
+                step: realStepName && realStepName !== '' ? realStepName : '',
+                params,
+                isCurrent: true,
+                isFirst: false,
+                isLast: true,
+              });
+            }
+          }
+          return executed;
+        },
+        (error: any) => {
+          this.logger.console.error(this.__classname, error);
+          return false;
+        }
+      )
+      .then(
+        (executed) => {
+          if (executed) {
+            this.dispatchCurrentStatus(
+              this.createFlowStatus({
+                context: realContextName,
+                module: realModuleName,
+                action: realActionName,
+
+                step: realStepName && realStepName !== '' ? realStepName : '',
+                stepParams: params,
+                stepIsFirst: false,
+                stepIsLast: true,
+
+                isReturned: false,
+                isReturnedConfirmed: false,
+                isReturnedCanceled: false,
+                isReturnedClosed: false,
+                isReturnedWithParams: null,
+
+                flowActionCanBackward: true, // stepConfig?.canBackwardToPreviousStep === false ? false : null, // false //
+                flowActionProcessed: 'open-step',
+              })
+            );
+          }
+          return executed;
+        },
+        (error: any) => {
+          this.logger.console.error(this.__classname, error);
+          return false;
+        }
+      );
+  }
+
+  public stepBackward(params: any | null = null): Promise<boolean> {
+    const currentAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getCurrentFlowAction
+      );
+
+    if (!currentAction) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const currentStep: FlowStepModel | undefined = currentAction.steps.find(
+      (realStepName: FlowStepModel, i) => realStepName.isCurrent
+    );
+
+    if (!currentStep) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    const previousStep: FlowStepModel | undefined = currentAction.steps.find(
+      (realStepName: FlowStepModel, i) =>
+        i < currentAction.steps.length - 1 &&
+        currentAction.steps[i + 1].isCurrent
+    );
+
+    if (!previousStep) {
+      this.logger.console.error(this.__classname, 'Operation Not Allowed!!!');
+      return Promise.reject('Operation Not Allowed!!!');
+    }
+
+    this.removeLastFlowStepInLastAction(true);
+
+    this.processingFlowNavigation = true;
+
+    return this.navigateToModuleActionStep(
+      currentAction.context,
+      currentAction.module,
+      currentAction.action,
+      previousStep.step,
+      previousStep.params
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.processNewFlowDataStatus(
+            null,
+            {
+              context: currentAction.context,
+              module: currentAction.module,
+              action: currentAction.action,
+
+              step: previousStep.step,
+              stepParams: previousStep.params,
+              stepIsFirst: previousStep.isFirst,
+              stepIsLast: previousStep.isLast,
+
+              isReturned: false,
+              isReturnedConfirmed: false,
+              isReturnedCanceled: false,
+              isReturnedClosed: false,
+              isReturnedWithParams: params,
+
+              flowActionProcessed: 'step-backward',
+            },
+            false
+          ).then(() => {
+            setTimeout(() => {
+              this.processingFlowNavigation = false;
+            }, 300);
+          });
+        } else {
+          setTimeout(() => {
+            this.processingFlowNavigation = false;
+          }, 300);
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  // -----------------------------------------------------------------------
+
+  public closeAll(
+    params: any | null = null,
+    forceNavigate: boolean = false
+  ): Promise<boolean> {
+    this.logger.console.debug(
+      this.__classname,
+      'closeAll',
+      params,
+      forceNavigate
+    );
+    const currentAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getCurrentFlowAction
+      );
+
+    const returned = !currentAction;
+
+    this.stackFlowAction(null, true);
+
+    if (!forceNavigate) {
+      return Promise.resolve(true);
+    }
+    return this.navigateToModuleActionStep('', '', '').then(
+      (executed) => {
+        if (executed) {
+          this.dispatchCurrentStatus(
+            this.createFlowStatus({
+              context: '',
+              module: '',
+              action: '',
+
+              step: '',
+              stepParams: null,
+              stepIsFirst: true,
+              stepIsLast: true,
+
+              isReturned: returned,
+              isReturnedConfirmed: false,
+              isReturnedCanceled: false,
+              isReturnedClosed: true,
+              isReturnedWithParams: params,
+
+              flowActionProcessed: 'close-all',
+            })
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  public closeCurrentAction(params: any | null = null): Promise<boolean> {
+    return this.removeLastActionAndNavigateToPreviousAction(
+      params,
+      true,
+      true,
+      false,
+      false
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.logger.console.debug(
+            this.__classname,
+            'Action Successfully Closed!!!'
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  public cancelCurrentAction(params: any | null = null): Promise<boolean> {
+    return this.removeLastActionAndNavigateToPreviousAction(
+      params,
+      true,
+      false,
+      true,
+      false
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.logger.console.debug(
+            this.__classname,
+            'Action Successfully Canceled!!!'
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  public confirmCurrentAction(params: any | null = null): Promise<boolean> {
+    return this.removeLastActionAndNavigateToPreviousAction(
+      params,
+      true,
+      false,
+      false,
+      true
+    ).then(
+      (executed) => {
+        if (executed) {
+          this.logger.console.debug(
+            this.__classname,
+            'Action Successfully Confirmed!!!'
+          );
+        }
+        return executed;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
+  }
+
+  // -----------------------------------------------------------------------
+}
