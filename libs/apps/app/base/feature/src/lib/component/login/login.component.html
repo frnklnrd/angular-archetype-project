@@ -133,7 +133,7 @@
       cFormCheckInput
       type="radio"
       [id]="provider"
-      [title]="title"
+      [title]="title | translate"
       [disabled]="activeProviderId !== provider"
     />
     <label cFormCheckLabel for="{{ provider }}">
@@ -143,7 +143,7 @@
         class="px-3"
         color="{{ color }}"
         variant="outline"
-        [title]="title"
+        [title]="title | translate"
         [active]="isActive(provider)"
         (click)="activeAsDefault(provider)"
       >
