@@ -1,0 +1,70 @@
+<div>
+  <app-ui-datatable-default
+    #booksTable
+    [settingsHandler]="booksTableSettingsHandler"
+    [dataSettings]="pagedDataSettings"
+    (paged)="onPaged($event)"
+    (sorted)="onSorted($event)"
+    (selected)="onSelected($event)"
+  >
+  </app-ui-datatable-default>
+</div>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+<ng-template #rowsGroupHeaderTpl let-group="group" let-expanded="expanded">
+  <div style="min-height: 55px" [class.hide]="group.value.length === 0">
+    <hr style="margin-top: 0px; border-top: 1px solid #d1d4d7" />
+    <div style="padding-left: 5px">
+      <a
+        href="javascript:void(0)"
+        [class.datatable-icon-right]="!expanded"
+        [class.datatable-icon-down]="expanded"
+        title="Expand/Collapse Group"
+        (click)="booksTable.toggleExpandGroup(group)"
+      >
+        <b
+          ><span
+            [innerText]="
+              'RATING: ' +
+              group.value[0].rating +
+              ' (' +
+              group.value.length +
+              ')'
+            "
+          >
+          </span
+        ></b>
+      </a>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+<ng-template #rowDetailsTpl let-row="row">
+  <div class="container-fluid">
+    <hr/>
+    <p style="white-space: break-spaces" [innerText]="row.description"></p>
+    <hr/>
+  </div>
+</ng-template>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+<ng-template
+  #fieldActionsTpl
+  let-row="row"
+  let-column="column"
+  let-value="value"
+  let-expanded="expanded"
+>
+<button *ngIf="!expanded" cButton color="secondary" (click)="booksTable.toggleExpandRow(row)">
+  <svg cIcon name="cilFolder" size="sm"></svg>
+</button>
+<button *ngIf="expanded" cButton color="info" (click)="booksTable.toggleExpandRow(row)">
+    <svg cIcon name="cilFolderOpen" size="sm"></svg>
+  </button>
+</ng-template>
+
+<!-- ----------------------------------------------------------------------------- -->

@@ -1,16 +1,36 @@
-import { Subject, merge, fromEvent } from 'rxjs';
-import { mapTo, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+/* eslint-disable no-extra-boolean-cast */
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+/* eslint-disable @angular-eslint/component-selector */
+import { Subject, fromEvent, merge } from 'rxjs';
+import { distinctUntilChanged, mapTo, takeUntil } from 'rxjs/operators';
 
-import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { NgZone, Inject, Component,
-  OnInit, OnDestroy, DoCheck, Input, Output, EventEmitter, HostBinding,
-  ViewChild, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  DoCheck,
+  EventEmitter,
+  HostBinding,
+  Inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 
 import { PerfectScrollbarDirective } from './perfect-scrollbar.directive';
 
-import { PerfectScrollbarEvent, PerfectScrollbarEvents,
-  PerfectScrollbarConfigInterface } from './perfect-scrollbar.interfaces';
+import {
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarEvent,
+  PerfectScrollbarEvents,
+} from './perfect-scrollbar.interfaces';
 
 @Component({
   selector: 'perfect-scrollbar',
@@ -18,9 +38,9 @@ import { PerfectScrollbarEvent, PerfectScrollbarEvents,
   templateUrl: './perfect-scrollbar.component.html',
   styleUrls: [
     './perfect-scrollbar.component.css',
-    '../../../../../node_modules/perfect-scrollbar/css/perfect-scrollbar.css'
+    '../../../../../node_modules/perfect-scrollbar/css/perfect-scrollbar.css',
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
   public states: any = {};
@@ -53,10 +73,12 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
   @Input() usePSClass: boolean = true;
 
   @HostBinding('class.ps-show-limits')
-  @Input() autoPropagation: boolean = false;
+  @Input()
+  autoPropagation: boolean = false;
 
   @HostBinding('class.ps-show-active')
-  @Input() scrollIndicators: boolean = false;
+  @Input()
+  scrollIndicators: boolean = false;
 
   @Input() config?: PerfectScrollbarConfigInterface;
 
@@ -73,17 +95,21 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
   @Output() psXReachEnd: EventEmitter<any> = new EventEmitter<any>();
   @Output() psXReachStart: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild(PerfectScrollbarDirective, { static: true }) directiveRef?: PerfectScrollbarDirective;
+  @ViewChild(PerfectScrollbarDirective, { static: true })
+  directiveRef?: PerfectScrollbarDirective;
 
-  constructor(private zone: NgZone, private cdRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private zone: NgZone,
+    private cdRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.stateUpdate
         .pipe(
           takeUntil(this.ngDestroy),
-          distinctUntilChanged((a, b) => (a === b && !this.stateTimeout))
+          distinctUntilChanged((a, b) => a === b && !this.stateTimeout)
         )
         .subscribe((state: string) => {
           if (this.stateTimeout && typeof window !== 'undefined') {
@@ -114,7 +140,7 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
                 this.allowPropagationY = false;
               }
             }
-          } else {
+          } else {
             if (state === 'left' || state === 'right') {
               this.states.left = false;
               this.states.right = false;
@@ -142,11 +168,17 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
 
                 this.stateTimeout = null;
 
-                if (this.interaction && (this.states.left || this.states.right)) {
+                if (
+                  this.interaction &&
+                  (this.states.left || this.states.right)
+                ) {
                   this.allowPropagationX = true;
                 }
 
-                if (this.interaction && (this.states.top || this.states.bottom)) {
+                if (
+                  this.interaction &&
+                  (this.states.top || this.states.bottom)
+                ) {
                   this.allowPropagationY = true;
                 }
 
@@ -164,10 +196,11 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
           const element = this.directiveRef.elementRef.nativeElement;
 
           fromEvent<WheelEvent>(element, 'wheel')
-            .pipe(
-              takeUntil(this.ngDestroy)
-            )
+            .pipe(takeUntil(this.ngDestroy))
             .subscribe((event: WheelEvent) => {
+
+              event.preventDefault();
+
               if (!this.disabled && this.autoPropagation) {
                 const scrollDeltaX = event.deltaX;
                 const scrollDeltaY = event.deltaY;
@@ -177,9 +210,7 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
             });
 
           fromEvent<TouchEvent>(element, 'touchmove')
-            .pipe(
-              takeUntil(this.ngDestroy)
-            )
+            .pipe(takeUntil(this.ngDestroy))
             .subscribe((event: TouchEvent) => {
               if (!this.disabled && this.autoPropagation) {
                 const scrollPositionX = event.touches[0].clientX;
@@ -195,25 +226,20 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
               }
             });
 
-            merge(
-              fromEvent(element, 'ps-scroll-x')
-                .pipe(mapTo('x')),
-              fromEvent(element, 'ps-scroll-y')
-                .pipe(mapTo('y')),
-              fromEvent(element, 'ps-x-reach-end')
-                .pipe(mapTo('right')),
-              fromEvent(element, 'ps-y-reach-end')
-                .pipe(mapTo('bottom')),
-              fromEvent(element, 'ps-x-reach-start')
-                .pipe(mapTo('left')),
-              fromEvent(element, 'ps-y-reach-start')
-                .pipe(mapTo('top')),
-            )
-            .pipe(
-              takeUntil(this.ngDestroy)
-            )
+          merge(
+            fromEvent(element, 'ps-scroll-x').pipe(mapTo('x')),
+            fromEvent(element, 'ps-scroll-y').pipe(mapTo('y')),
+            fromEvent(element, 'ps-x-reach-end').pipe(mapTo('right')),
+            fromEvent(element, 'ps-y-reach-end').pipe(mapTo('bottom')),
+            fromEvent(element, 'ps-x-reach-start').pipe(mapTo('left')),
+            fromEvent(element, 'ps-y-reach-start').pipe(mapTo('top'))
+          )
+            .pipe(takeUntil(this.ngDestroy))
             .subscribe((state: string) => {
-              if (!this.disabled && (this.autoPropagation || this.scrollIndicators)) {
+              if (
+                !this.disabled &&
+                (this.autoPropagation || this.scrollIndicators)
+              ) {
                 this.stateUpdate.next(state);
               }
             });
@@ -253,18 +279,20 @@ export class PerfectScrollbarComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  private checkPropagation(event: any, deltaX: number, deltaY: number): void {
+  private checkPropagation(event: any, deltaX: number, deltaY: number): void {
     this.interaction = true;
 
-    const scrollDirectionX = (deltaX < 0) ? -1 : 1;
-    const scrollDirectionY = (deltaY < 0) ? -1 : 1;
+    const scrollDirectionX = deltaX < 0 ? -1 : 1;
+    const scrollDirectionY = deltaY < 0 ? -1 : 1;
 
-    if ((this.usePropagationX && this.usePropagationY) ||
-        (this.usePropagationX && (!this.allowPropagationX ||
-        (this.scrollDirectionX !== scrollDirectionX))) ||
-        (this.usePropagationY && (!this.allowPropagationY ||
-        (this.scrollDirectionY !== scrollDirectionY))))
-    {
+    if (
+      (this.usePropagationX && this.usePropagationY) ||
+      (this.usePropagationX &&
+        (!this.allowPropagationX ||
+          this.scrollDirectionX !== scrollDirectionX)) ||
+      (this.usePropagationY &&
+        (!this.allowPropagationY || this.scrollDirectionY !== scrollDirectionY))
+    ) {
       event.preventDefault();
       event.stopPropagation();
     }

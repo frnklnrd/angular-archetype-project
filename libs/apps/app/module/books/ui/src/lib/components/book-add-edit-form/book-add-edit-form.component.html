@@ -1,0 +1,84 @@
+<form class='form-horizontal'>
+  <app-ui-dynamic-form-default #dynamicFormsComponent
+                             [formModel]='formModel'
+                             [customModelControlsTpl]="[
+                                {
+                                  modelId: 'fullName',
+                                  template: newLine1HrTpl,
+                                   align: 'START'
+                                },
+                                {
+                                  modelId: 'myFormArray',
+                                  template: newLine2HrTpl,
+                                  align: 'START'
+                                },
+                                {
+                                  modelId: 'myFormArray',
+                                  template: myFormArrayTpl
+                                },
+                                {
+                                  modelId: 'myFormArray2',
+                                  template: newLine2HrTpl,
+                                  align: 'START'
+                                },
+                               ]"
+                             [formLayout]='formLayout'
+                             [keepFormValuesOnChanges]='true'
+                             [markAllAsReadOnly]='markAllAsReadOnly'
+                             (formGroupCreated)='onFormGroupCreated($event)'
+  >
+  </app-ui-dynamic-form-default>
+</form>
+
+<ng-template #myFormArrayTpl
+             let-group='group'
+             let-index='index'
+             let-context='context'
+             let-removeFormArrayItemFn='removeFormArrayItemFn'
+             let-insertFormArrayItemFn='insertFormArrayItemFn'
+             let-addFormArrayItemFn='addFormArrayItemFn'>
+  <div class='col-md-4 col-sm-12 col-xs-12 ml-auto'>
+    <label class='d-none d-md-block'>&nbsp;</label>
+    <div class='text-right'>
+
+      <button type='button' class='btn btn-outline-primary me-2' *ngIf='context.groups.length !== index + 1'
+              (click)="insertFormArrayItemFn('myFormArray', context, index + 1)">
+        <i class='fa fa-plus-circle'></i>
+      </button>
+
+      <button type='button' class='btn btn-outline-success me-2' *ngIf='context.groups.length === index + 1'
+              (click)="addFormArrayItemFn('myFormArray', context)">
+        <i class='fa fa-plus-square'></i>
+      </button>
+
+      <button type='button' class='btn btn-outline-danger'
+              [disabled]='context.groups.length === 1'
+              (click)="removeFormArrayItemFn('myFormArray', context, index)">
+        <i class='fa fa-trash'></i>
+      </button>
+    </div>
+  </div>
+  <div class='col-xs-12 col-sm-12' *ngIf='context.groups.length !== index + 1'>
+    <hr style='width: 100%' />
+  </div>
+  <div class='col-xs-12 col-sm-12' *ngIf='context.groups.length === index + 1'>
+    <hr style='width: 100%; border: 1px solid #d8d8d8' />
+  </div>
+
+</ng-template>
+
+<ng-template #newLine1HrTpl>
+  <hr style='width: 100%; border: 1px solid #d8d8d8' />
+</ng-template>
+
+<ng-template #newLine2HrTpl
+             let-group='group'
+             let-index='index'
+             let-context='context'>
+  <ng-container *ngIf='!index || index === 0'>
+    <div class='col-xs-12 col-sm-12 mt-0 mb-0'>
+      <hr style='width: 100%; border: 1px solid #d8d8d8' />
+    </div>
+  </ng-container>
+
+</ng-template>

@@ -1,0 +1,32 @@
+<router-outlet></router-outlet>
+
+<!-- App Loading... -->
+
+<ng-container *ngIf="isLoadingValue">
+  <div
+    id="loader-container"
+    class="fade show container-fluid hide-native-scrollbar"
+  >
+    <div class="row">
+      <div id="loader">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="loading"></div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- App Loading... -->
+
+<!-- App Notifier... -->
+
+<notifier-container></notifier-container>
+
+<!-- App Notifier... -->
