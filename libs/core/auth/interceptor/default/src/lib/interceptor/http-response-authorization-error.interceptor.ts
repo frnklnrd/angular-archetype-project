@@ -5,11 +5,10 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, inject } from '@angular/core';
 import {
-  AuthManagerService,
   AUTH_MANAGER_SERVICE,
+  AuthManagerService,
 } from '@app/core/auth/manager/api';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -18,8 +17,6 @@ import { catchError } from 'rxjs/operators';
 export class HttpResponseAuthorizationErrorInterceptor
   implements HttpInterceptor
 {
-  private router: Router = inject<Router>(Router);
-
   private auth: AuthManagerService =
     inject<AuthManagerService>(AUTH_MANAGER_SERVICE);
 
@@ -35,10 +32,7 @@ export class HttpResponseAuthorizationErrorInterceptor
       catchError((err) => {
         if (err.status === 401) {
           // auto logout if 401 response returned from api
-          this.auth.logout().then(() => {
-            this.router.navigate(['/500']).then();
-            // location.reload(true);
-          });
+          this.auth.logout().then();
         }
 
         const error = err.error.message || err.statusText;

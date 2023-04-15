@@ -25,6 +25,7 @@ const routes: Routes = [
         action: 'alerts',
         step: '',
       },
+      animation: 'DemoAlertsPage'
     },
     /*canActivate: [() => checkIsAllowed(['ROLE_USER'])],*/
   },
@@ -40,6 +41,7 @@ const routes: Routes = [
         action: 'dates',
         step: '',
       },
+      animation: 'DemoDatesPage'
     },
     /*canActivate: [() => checkIsAllowed(['ROLE_USER'])],*/
   },

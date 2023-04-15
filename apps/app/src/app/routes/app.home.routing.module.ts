@@ -18,7 +18,8 @@ const routes: Routes = [
         module: '',
         action: '',
         step: ''
-      }
+      },
+      animation: 'HomePage'
     },
     /*canActivate: [() => checkIsAllowed([])],*/
   },
