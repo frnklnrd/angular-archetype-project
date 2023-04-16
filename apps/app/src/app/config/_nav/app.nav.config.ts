@@ -46,6 +46,7 @@ export const navItems: INavData[] = [
       },
     ],
   },
+  /*
   {
     name: 'Login',
     url: '/login',
@@ -71,6 +72,7 @@ export const navItems: INavData[] = [
     url: '/500',
     iconComponent: { name: 'cil-gamepad' },
   },
+  */
   /*
   {
     title: true,

@@ -25,6 +25,7 @@ const routes: Routes = [
         action: 'list',
         step: '',
       },
+      animation: 'BooksPage'
     },
     /*canActivate: [() => checkIsAllowed(['ROLE_USER'])],*/
   },
@@ -41,6 +42,7 @@ const routes: Routes = [
         step: '',
         steps: ['step1', 'step2', 'step3'],
       },
+      animation: 'BooksAddPage'
     },
     /*canActivate: [() => checkIsAllowed(['ROLE_USER'])],*/
   },

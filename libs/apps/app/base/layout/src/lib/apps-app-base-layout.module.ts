@@ -16,6 +16,7 @@ import {
   DefaultHeaderComponent,
   DefaultLayoutComponent,
 } from './component/containers';
+import { MenuFlowStatusComponent } from './component/blocks/menu-flow-status/menu-flow-status.component';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import {
     MenuLanguageChooserComponent,
     MenuQuickNotificationsComponent,
     MenuUserDropdownComponent,
+    MenuFlowStatusComponent,
   ],
   providers: [],
   exports: [DefaultLayoutComponent, AppsAppUiCoreModule],

@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
 
 import { Title } from '@angular/platform-browser';
 import { LoadingIndicatorState } from '@app/core/loader/store/state';
@@ -27,8 +26,6 @@ export class AppComponent implements OnInit {
   // -----------------------------------------------------
 
   private titleService: Title = inject<Title>(Title);
-
-  private router: Router = inject<Router>(Router);
 
   private iconSetService: IconSetService =
     inject<IconSetService>(IconSetService);
@@ -65,12 +62,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.logger.console.debug('AppComponent', 'onInit');
 
-    this.router.events.subscribe((evt) => {
-      if (!(evt instanceof NavigationEnd)) {
-        return;
-      }
-    });
-
     this.currentTextDirection$.subscribe((dir: string) => {
       const html = document.getElementsByTagName('html')[0] as HTMLElement;
       html.dir = dir;
@@ -81,32 +72,12 @@ export class AppComponent implements OnInit {
       html.lang = lang;
     });
 
-    this.isLoading$.subscribe((value: boolean) => {
-      timer(0)
+    this.isLoading$.subscribe((loading: boolean) => {
+      timer(loading ? 0 : 300)
         .pipe(take(1))
         .subscribe(() => {
-          this.isLoadingValue = value;
+          this.isLoadingValue = loading;
         });
     });
-
-    /*
-   let sub: Subscription | null = null;
-
-   const observer = ElementsResizeObserver.getElementsResizeObserver('div', true);
-
-    setTimeout(()=>{
-      Logger.log(this.__classname, "ElementsResizeObserver -> subscribe")
-      sub = observer.subscribe((data) => {
-        Logger.table('getBodyResizeObserver Data 1', data);
-      });
-
-    }, 10000);
-
-    setTimeout(()=>{
-      Logger.log(this.__classname, "ElementsResizeObserver -> unsubscribe")
-      sub?.unsubscribe();
-
-    }, 20000);
-    */
   }
 }

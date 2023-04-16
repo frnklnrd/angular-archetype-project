@@ -7,8 +7,8 @@ import {
   AuthManagerService,
 } from '@app/core/auth/manager/api';
 import { AbstractFeatureComponent } from '@app/core/ddd/api';
-import { Store } from '@ngxs/store';
 import { marker as _i18n } from '@biesbjerg/ngx-translate-extract-marker';
+import { Store } from '@ngxs/store';
 
 @Component({
   templateUrl: './login.component.html',
@@ -30,9 +30,9 @@ export class LoginComponent
   // ----------------------------------------------------------------
 
   public form: FormGroup = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(3)]],
-    password: [null, [Validators.required, Validators.minLength(3)]],
-    rememberme: [null, []],
+    username: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(3)]],
+    rememberme: [false, []],
   });
 
   // ----------------------------------------------------------------
@@ -45,7 +45,7 @@ export class LoginComponent
       ),
       color: 'info',
       icon: 'cil3d',
-      title: _i18n('app.login.provider.SUITECRM7_V8.title')
+      title: _i18n('app.login.provider.SUITECRM7_V8.title'),
     },
     {
       id: 'LARAVEL9',
@@ -54,7 +54,7 @@ export class LoginComponent
       ),
       color: 'success',
       icon: 'cib-laravel',
-      title: _i18n('app.login.provider.LARAVEL9.title')
+      title: _i18n('app.login.provider.LARAVEL9.title'),
     },
     {
       id: 'OAUTH2_SOCIAL_GOOGLE',
@@ -63,7 +63,7 @@ export class LoginComponent
       ),
       color: 'danger',
       icon: 'cib-google',
-      title: _i18n('app.login.provider.OAUTH2_SOCIAL_GOOGLE.title')
+      title: _i18n('app.login.provider.OAUTH2_SOCIAL_GOOGLE.title'),
     },
     {
       id: 'OAUTH2_SOCIAL_FACEBOOK',
@@ -72,7 +72,7 @@ export class LoginComponent
       ),
       color: 'primary',
       icon: 'cib-facebook',
-      title: _i18n('app.login.provider.OAUTH2_SOCIAL_FACEBOOK.title')
+      title: _i18n('app.login.provider.OAUTH2_SOCIAL_FACEBOOK.title'),
     },
     {
       id: 'OAUTH2_KEYCLOAK',
@@ -81,7 +81,7 @@ export class LoginComponent
       ),
       color: 'warning',
       icon: 'cil-lock-locked',
-      title: _i18n('app.login.provider.OAUTH2_KEYCLOAK.title')
+      title: _i18n('app.login.provider.OAUTH2_KEYCLOAK.title'),
     },
     {
       id: 'MOCKED_USER_DATA',
@@ -90,27 +90,42 @@ export class LoginComponent
       ),
       color: 'secondary',
       icon: 'cil-puzzle',
-      title: _i18n('app.login.provider.MOCKED_USER_DATA.title')
+      title: _i18n('app.login.provider.MOCKED_USER_DATA.title'),
     },
   ];
 
   activeProviderId = '';
 
+  showProvidersOptions = false;
+
   // ----------------------------------------------------------------
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    let providersEnabledCount = 0;
+
+    this.providersConfig.forEach((pConfig) => {
+      if (pConfig.enabled) {
+        providersEnabledCount++;
+      }
+    });
+
+    this.showProvidersOptions = providersEnabledCount > 1;
+
     const defaultProviderId: string = this.store.selectSnapshot(
-      (state) => state.auth.provider?.providerId
+      (state) => state.auth?.provider?.providerId
     );
-    if (defaultProviderId){
-      this.activeProviderId = defaultProviderId
+
+    if (defaultProviderId) {
+      this.activeProviderId = defaultProviderId;
     } else {
-      const enabledProvides = this.providersConfig.filter((prov) => prov.enabled);
-      if (enabledProvides.length> 0){
+      const enabledProvides = this.providersConfig.filter(
+        (prov) => prov.enabled
+      );
+      if (enabledProvides.length > 0) {
         this.activeAsDefault(enabledProvides[0].id);
       }
-
     }
   }
 

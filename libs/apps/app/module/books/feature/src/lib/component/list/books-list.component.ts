@@ -121,7 +121,6 @@ export class BooksListComponent
 
   goToAdd(): void {
     this.flow.startAction('', 'books', 'add', 'step1').then();
-    // this.router.navigate(['/books/add', 'step1']);
   }
 
   // ----------------------------------------------------------

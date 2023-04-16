@@ -18,7 +18,8 @@ const routes: Routes = [
         module: 'dashboard',
         action: '',
         step: ''
-      }
+      },
+      animation: 'DashboardPage'
     },
     /*canActivate: [() => checkIsAllowed(['ROLE_USER'])],*/
   },

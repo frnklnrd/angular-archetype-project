@@ -23,20 +23,21 @@ import { AppTranslationConfigModule } from './translation/app.translation.config
     CommonModule,
     //-----------------
     // Env
+    // ----------------
     AppEnvConfigModule,
     //-----------------
-    // Logger
-    AppLoggerConfigModule,
+    // Code
+    // ----------------
+    AppCodeConfigModule,
     //-----------------
     // Crypto
+    // ----------------
     AppCryptoConfigModule,
     //-----------------
-    // Code
-    AppCodeConfigModule,
-    // Api
+    // Logger
     // ----------------
-    AppApiConfigModule,
-    //-----------------
+    AppLoggerConfigModule,
+    // ----------------
     // State
     //-----------------
     AppStateConfigModule,
@@ -49,6 +50,18 @@ import { AppTranslationConfigModule } from './translation/app.translation.config
     // ----------------
     AppTranslationConfigModule,
     // ----------------
+    // Api
+    // ----------------
+    AppApiConfigModule,
+    // ----------------
+    // Auth
+    // ----------------
+    AppAuthConfigModule,
+    // ----------------
+    // Flow
+    // ----------------
+    AppFlowConfigModule,
+    // ----------------
     // Navigation
     // ----------------
     AppNavConfigModule,
@@ -57,15 +70,9 @@ import { AppTranslationConfigModule } from './translation/app.translation.config
     // ----------------
     AppMenuConfigModule,
     // ----------------
-    // Auth
-    // ----------------
-    AppAuthConfigModule,
-    // ----------------
     // Dynamic Forms
-    AppDynamicFormsConfigModule,
     // ----------------
-    // Flow
-    AppFlowConfigModule,
+    AppDynamicFormsConfigModule,
     // ----------------
   ],
   providers: [],

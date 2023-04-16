@@ -35,7 +35,5 @@ export class AppEnvConfigModule {
 
   private init(): void {
     this.logger.console.debug('AppEnvConfigModule', 'init');
-
-    this.logger.console.debug('APP_ENV_CONFIG', APP_ENV_CONFIG);
   }
 }
