@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AbstractComponent } from '@app/core/api';
 import { AuthDataState } from '@app/core/auth/store/state';
-import { FlowManagerService } from '@app/core/flow/manager/default';
+import { FlowManagerService } from '@app/core/flow/manager';
 import { FlowStatusModel } from '@app/core/flow/store/model';
 import { FlowDataState } from '@app/core/flow/store/state';
 import {
   ModalAlertResultModel,
   ModalManagerService,
-} from '@app/core/ui/modal/default';
-import { Autowired } from '@app/core/util/code/decorator/autowired';
+} from '@app/ui/modal/default';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
@@ -25,11 +24,11 @@ export class MenuFlowStatusComponent
   // SERVICES
   // -----------------------------------------------------
 
-  @Autowired(FlowManagerService)
-  public flow!: FlowManagerService;
+  public flow: FlowManagerService =
+    inject<FlowManagerService>(FlowManagerService);
 
-  @Autowired(ModalManagerService)
-  public modal!: ModalManagerService;
+  public modal: ModalManagerService =
+    inject<ModalManagerService>(ModalManagerService);
 
   // -----------------------------------------------------
   // OBSERVABLES

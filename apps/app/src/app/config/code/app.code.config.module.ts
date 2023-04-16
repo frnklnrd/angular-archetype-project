@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
-import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { NgModule, Optional, SkipSelf, inject } from '@angular/core';
+import { ActivatedRoute, Event, NavigationEnd, Router } from '@angular/router';
+import { AbstractFeatureComponent } from '@app/core/ddd/api';
 import { ExtAngularDisableBrowserBackButtonModule } from '@app/ext/angular-disable-browser-back-button';
+import { LoggerService } from '@app/util/logger/manager';
+import { filter } from 'rxjs';
+import { APP_ENV_CONFIG } from '../_env/app.env.loader';
 
 @NgModule({
   declarations: [],
@@ -17,16 +23,12 @@ import { ExtAngularDisableBrowserBackButtonModule } from '@app/ext/angular-disab
   exports: [],
 })
 export class AppCodeConfigModule {
-  /*
-  @Autowired(LoggerService)
-  private logger!: LoggerService;
+  private logger: LoggerService = inject<LoggerService>(LoggerService);
 
-  @Autowired(Router)
-  private router!: Router;
+  private router: Router = inject<Router>(Router);
 
-  @Autowired(ActivatedRoute)
-  private activatedRoute!: ActivatedRoute;
-  */
+  private activatedRoute: ActivatedRoute =
+    inject<ActivatedRoute>(ActivatedRoute);
 
   constructor(
     @Optional()
@@ -43,22 +45,18 @@ export class AppCodeConfigModule {
   }
 
   private init(): void {
-    // -----------------------------
-    // this.initCheckAbstractFeatureComponentImplementation();
-    // -----------------------------
-  }
+    this.logger.console.debug('AppCodeConfigModule', 'init');
 
-  /*
-  private initCheckAbstractFeatureComponentImplementation(): void {
-    this.logger.debug(
+    this.logger.console.debug(
       'AppFlowConfigModule',
       'initCheckAbstractFeatureComponentImplementation'
     );
 
     const production: boolean = APP_ENV_CONFIG.production;
 
-    this.router.events.subscribe((evt: Event) => {
-      if (evt instanceof NavigationEnd) {
+    this.router.events
+      .pipe(filter((evt) => evt instanceof NavigationEnd))
+      .subscribe((evt: Event) => {
         let route = this.activatedRoute.firstChild;
         let child = route;
         while (child) {
@@ -79,18 +77,18 @@ export class AppCodeConfigModule {
             'Component [' +
             component.prototype.constructor.name +
             '] must inherit from [AbstractFeatureComponent]';
-          this.logger.warn('AppCodeConfigModule', error);
+          this.logger.console.warn('AppCodeConfigModule', error);
           // throwError(error);
         }
-      }
-    });
+      });
 
+    /*
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
       }
       window.scrollTo(0, 0);
     });
+    */
   }
-  */
 }

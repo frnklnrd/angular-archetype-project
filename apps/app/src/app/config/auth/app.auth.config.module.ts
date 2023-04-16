@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import { inject, NgModule, Optional, SkipSelf } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import {
   AUTH_MANAGER_SERVICE,
   AuthManagerService,
@@ -19,10 +18,14 @@ import {
 } from '@app/core/auth/store/action';
 import { LoggerService } from '@app/util/logger/manager';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpResponseAuthorizationErrorInterceptor } from '@app/core/auth/interceptor/default';
 import { CoreAuthProviderLaravel9Module } from '@app/core/auth/provider/laravel9';
 import { CoreAuthProviderOauth2SocialFacebookModule } from '@app/core/auth/provider/oauth2-social-facebook';
 import { FlowManagerService } from '@app/core/flow/manager';
+import { Navigate } from '@ngxs/router-plugin';
 import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { firstValueFrom } from 'rxjs';
 import { APP_AUTH_CONFIG } from './app.auth.config';
 
 const authProvidersModules: any[] = [];
@@ -66,11 +69,17 @@ if (APP_AUTH_CONFIG.providers.laravel9.enabled) {
     // App Auth Guards
     // CoreAuthGuardDefaultModule,
     // ----------------
-    // App Auth Interceptors
-    // CoreAuthInterceptorDefaultModule,
-    // ----------------
   ],
-  providers: [],
+  providers: [
+    // ----------------
+    // App Auth Interceptors
+    // ----------------
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpResponseAuthorizationErrorInterceptor,
+      multi: true,
+    },
+  ],
   exports: [
     // CoreAuthGuardDefaultModule
   ],
@@ -84,14 +93,9 @@ export class AppAuthConfigModule {
   private flow: FlowManagerService =
     inject<FlowManagerService>(FlowManagerService);
 
-  private router: Router = inject<Router>(Router);
-
   private store: Store = inject<Store>(Store);
 
   private actions$: Actions = inject<Actions>(Actions);
-
-  private activatedRoute: ActivatedRoute =
-    inject<ActivatedRoute>(ActivatedRoute);
 
   constructor(
     @Optional()
@@ -108,7 +112,7 @@ export class AppAuthConfigModule {
   }
 
   private init(): void {
-    this.auth.init();
+    this.logger.console.debug('AppAuthConfigModule', 'init');
 
     this.actions$
       .pipe(ofActionDispatched(AuthDoLoginSuccessfullyAction))
@@ -153,6 +157,8 @@ export class AppAuthConfigModule {
           });
         }
       });
+
+    this.auth.init();
   }
 
   private goToDefaultUserPageAfterLogin(): void {
@@ -161,7 +167,9 @@ export class AppAuthConfigModule {
       'goToDefaultUserPageAfterLogin'
     );
 
-    let route = this.activatedRoute.firstChild;
+    let route = this.store.selectSnapshot(
+      (state) => state.router?.state?.root?.firstChild
+    );
 
     let child = route;
 
@@ -174,21 +182,23 @@ export class AppAuthConfigModule {
       }
     }
 
-    route?.params.subscribe((params: any) => {
-      if (params?.redirect) {
-        this.router.navigate([params?.redirect]).then((navigated) => {
-          if (!navigated) {
-            this.logger.console.debug(
-              'AppAuthConfigModule',
-              'Navigation to [' + params?.redirect + '] Failed!!!'
-            );
-            this.goToUserHomePageAfterLogin();
-          }
-        });
-      } else {
-        this.goToUserHomePageAfterLogin();
-      }
-    });
+    const routeParams = route.params;
+
+    if (routeParams?.redirect) {
+      firstValueFrom(
+        this.store.dispatch(new Navigate([routeParams?.redirect]))
+      ).then((navigated) => {
+        if (!navigated) {
+          this.logger.console.debug(
+            'AppAuthConfigModule',
+            'Navigation to [' + routeParams?.redirect + '] Failed!!!'
+          );
+          this.goToUserHomePageAfterLogin();
+        }
+      });
+    } else {
+      this.goToUserHomePageAfterLogin();
+    }
   }
 
   private goToUserHomePageAfterLogin(): void {

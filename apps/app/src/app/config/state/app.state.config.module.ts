@@ -15,8 +15,12 @@ import {
 } from '@app/util/storage/local';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import {
+  NavigationActionTiming,
+  NgxsRouterPluginModule,
+} from '@ngxs/router-plugin';
 import { NgxsStoragePluginModule, STORAGE_ENGINE } from '@ngxs/storage-plugin';
-import { NgxsModule } from '@ngxs/store';
+import { NgxsModule, getActionTypeFromInstance } from '@ngxs/store';
 import {
   UTIL_STORE_LOCAL_STORAGE_PREFIX_KEY,
   UTIL_STORE_LOCAL_STORAGE_USE_CRYPTO_FOR_KEYS,
@@ -41,6 +45,12 @@ if (!APP_ENV_CONFIG.production) {
   pluginModulesForDevMode.push(
     NgxsLoggerPluginModule.forRoot({
       disabled: APP_ENV_CONFIG.production,
+      collapsed: true,
+      filter: (action) => {
+        const actionName: string | undefined =
+          getActionTypeFromInstance(action);
+        return actionName ? actionName.indexOf('[FLOW]') === -1 : true;
+      },
     })
   );
 }
@@ -59,6 +69,10 @@ if (!APP_ENV_CONFIG.production) {
       key: [...APP_STORE_KEYS_TO_STORAGE],
       // deserialize: JSON.parse,
       // serialize: JSON.stringify
+    }),
+    // ---------------------------
+    NgxsRouterPluginModule.forRoot({
+      navigationActionTiming: NavigationActionTiming.PostActivation,
     }),
     // ---------------------------
     ...pluginModulesForDevMode,

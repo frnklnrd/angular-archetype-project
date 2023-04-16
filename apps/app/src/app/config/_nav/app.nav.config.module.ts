@@ -35,7 +35,5 @@ export class AppNavConfigModule {
 
   private init(): void {
     this.logger.console.debug('AppNavConfigModule', 'init');
-
-    this.logger.console.debug('APP_LAYOUT_NAV_ITEMS', navItems);
   }
 }

@@ -18,6 +18,7 @@ import {
   AppsAppBaseLayoutModule,
   DefaultLayoutComponent,
 } from '@app/apps/app/base/layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   /*{
@@ -144,6 +145,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
     RouterModule.forRoot(routes, {
       scrollPositionRestoration: 'top',
       anchorScrolling: 'enabled',

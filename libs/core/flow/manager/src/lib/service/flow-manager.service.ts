@@ -15,15 +15,14 @@ import {
 } from '@app/core/flow/store/action';
 import { FlowStatusModel } from '@app/core/flow/store/model';
 import { FlowDataState } from '@app/core/flow/store/state';
+import { Navigate } from '@ngxs/router-plugin';
 
 import { Store } from '@ngxs/store';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 
 @Injectable()
 export class FlowManagerService extends AbstractService {
   private processingFlowNavigation: boolean = false;
-
-  private subscription!: Subscription;
 
   protected store: Store = inject<Store>(Store);
 
@@ -31,6 +30,8 @@ export class FlowManagerService extends AbstractService {
 
   protected activatedRoute: ActivatedRoute =
     inject<ActivatedRoute>(ActivatedRoute);
+
+  private subscription!: Subscription;
 
   constructor() {
     super();
@@ -53,7 +54,9 @@ export class FlowManagerService extends AbstractService {
 
         this.logger.console.debug(this.__classname, 'NavigationEnd');
 
-        let route = this.activatedRoute.firstChild;
+        let route = this.store.selectSnapshot(
+          (state) => state.router?.state?.root?.firstChild
+        );
 
         let child = route;
 
@@ -66,93 +69,105 @@ export class FlowManagerService extends AbstractService {
           }
         }
 
-        this.logger.console.debug(this.__classname, 'route', route);
+        // this.logger.console.debug(this.__classname, 'route', route);
 
-        route?.data.subscribe((data: any) => {
-          this.logger.console.debug(this.__classname, 'route -> data', data);
+        const routeData = route.data;
 
-          const flowDataConfig = data?.flowData;
+        // this.logger.console.debug(this.__classname, 'route -> data', routeData);
 
-          this.logger.console.debug(
-            this.__classname,
-            'flowDataConfig',
-            flowDataConfig
+        const flowDataConfig = routeData?.flowData;
+
+        /*
+        this.logger.console.debug(
+          this.__classname,
+          'flowDataConfig',
+          flowDataConfig
+        );
+        */
+
+        if (!flowDataConfig) {
+          const navigatedUrl = this.store.selectSnapshot<any>(
+            (state) => state.router?.state?.url
           );
+          this.logger.console.warn(
+            this.__classname,
+            'Navigation to [' + navigatedUrl + '] without flow data info!!!'
+          );
+          return;
+        }
 
-          if (!flowDataConfig) {
-            this.logger.console.warn(
-              this.__classname,
-              'Navigation to [' +
-                $event.urlAfterRedirects +
-                '] without flow data info!!!'
-            );
-            return;
-          }
-
-          const realContextName = (
-            flowDataConfig.context ? flowDataConfig.context : ''
-          ).toLowerCase();
-          const realModuleName = (
-            flowDataConfig.module ? flowDataConfig.module : ''
-          ).toLowerCase();
-          const realActionName = (
-            flowDataConfig.action ? flowDataConfig.action : ''
-          ).toLowerCase();
-          const realStepName = (
-            flowDataConfig.step ? flowDataConfig.step : ''
-          ).toLowerCase();
-
-          const lastAction: FlowActionModel | null =
-            this.store.selectSnapshot<FlowActionModel | null>(
-              FlowDataState.getCurrentFlowAction
-            );
-
-          if (
-            realContextName === lastAction?.context &&
-            realModuleName === lastAction?.module &&
-            realActionName === lastAction?.action
-          ) {
-            return;
-          }
-
-          this.processNewFlowDataStatus(
-            {
-              context: realContextName,
-              module: realModuleName,
-              action: realActionName,
-              steps: [
-                {
-                  step: realStepName && realStepName !== '' ? realStepName : '',
-                  params: {},
-                  isCurrent: true,
-                  isFirst: true,
-                  isLast: true,
-                },
-              ],
-            },
-            {
-              context: realContextName,
-              module: realModuleName,
-              action: realActionName,
-
-              step: realStepName && realStepName !== '' ? realStepName : '',
-              stepParams: {},
-              stepIsFirst: true,
-              stepIsLast: true,
-
-              isReturned: false,
-              isReturnedConfirmed: false,
-              isReturnedCanceled: false,
-              isReturnedClosed: false,
-              isReturnedWithParams: null,
-
-              flowActionProcessed: 'open-action',
-            },
-            true
-          ).then();
-        });
+        this.checkAndProcessFlowConfigForNavigation(flowDataConfig);
       });
     }
+  }
+
+  protected checkAndProcessFlowConfigForNavigation(flowDataConfig: any): void {
+    this.logger.console.debug(
+      this.__classname,
+      'checkAndProcessFlowConfigForNavigation',
+      flowDataConfig
+    );
+    const realContextName = (
+      flowDataConfig.context ? flowDataConfig.context : ''
+    ).toLowerCase();
+    const realModuleName = (
+      flowDataConfig.module ? flowDataConfig.module : ''
+    ).toLowerCase();
+    const realActionName = (
+      flowDataConfig.action ? flowDataConfig.action : ''
+    ).toLowerCase();
+    const realStepName = (
+      flowDataConfig.step ? flowDataConfig.step : ''
+    ).toLowerCase();
+
+    const lastAction: FlowActionModel | null =
+      this.store.selectSnapshot<FlowActionModel | null>(
+        FlowDataState.getCurrentFlowAction
+      );
+
+    if (
+      realContextName === lastAction?.context &&
+      realModuleName === lastAction?.module &&
+      realActionName === lastAction?.action
+    ) {
+      return;
+    }
+
+    this.processNewFlowDataStatus(
+      {
+        context: realContextName,
+        module: realModuleName,
+        action: realActionName,
+        steps: [
+          {
+            step: realStepName && realStepName !== '' ? realStepName : '',
+            params: {},
+            isCurrent: true,
+            isFirst: true,
+            isLast: true,
+          },
+        ],
+      },
+      {
+        context: realContextName,
+        module: realModuleName,
+        action: realActionName,
+
+        step: realStepName && realStepName !== '' ? realStepName : '',
+        stepParams: {},
+        stepIsFirst: true,
+        stepIsLast: true,
+
+        isReturned: false,
+        isReturnedConfirmed: false,
+        isReturnedCanceled: false,
+        isReturnedClosed: false,
+        isReturnedWithParams: null,
+
+        flowActionProcessed: 'open-action',
+      },
+      true
+    ).then();
   }
 
   // -----------------------------------------------------------------------
@@ -422,7 +437,7 @@ export class FlowManagerService extends AbstractService {
       });
 
     if (!previousAction) {
-      return Promise.resolve(false);
+      return this.navigateToModuleActionStep('','','','',{});
     }
 
     const previousCurrentStep: FlowStepModel | undefined =
