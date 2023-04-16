@@ -112,7 +112,7 @@ export class AppAuthConfigModule {
   }
 
   private init(): void {
-    this.auth.init();
+    this.logger.console.debug('AppAuthConfigModule', 'init');
 
     this.actions$
       .pipe(ofActionDispatched(AuthDoLoginSuccessfullyAction))
@@ -157,6 +157,8 @@ export class AppAuthConfigModule {
           });
         }
       });
+
+    this.auth.init();
   }
 
   private goToDefaultUserPageAfterLogin(): void {

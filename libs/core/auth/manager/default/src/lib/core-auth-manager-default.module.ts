@@ -22,7 +22,7 @@ import { DefaultAuthManagerService } from './service/default-auth-manager.servic
   ],
 })
 export class CoreAuthManagerDefaultModule {
-  constructor(authManager: DefaultAuthManagerService) {
-    authManager.init({});
+  constructor() {
+    //
   }
 }

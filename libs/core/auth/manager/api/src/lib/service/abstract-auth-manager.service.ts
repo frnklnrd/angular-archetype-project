@@ -10,8 +10,8 @@ import {
   AuthUserPermissionsModel,
 } from '@app/core/auth/api';
 import {
-  AuthProviderService,
   AUTH_PROVIDER_SERVICE,
+  AuthProviderService,
 } from '@app/core/auth/provider/api';
 import {
   AuthChangeExtraDataAction,
@@ -56,51 +56,104 @@ export abstract class AbstractAuthManagerService
       provider.setAuthManagerService(this);
     });
 
-    const defaultProviderKey =
+    const defaultProviderFromStore =
       this.store.selectSnapshot<AuthProviderModel | null>(
         AuthDataState.getProvider
       );
 
     this.logger.console.debug(
       this.__classname,
-      'defaultProviderKey',
-      defaultProviderKey
+      'defaultProviderFromStore',
+      defaultProviderFromStore?.providerId
     );
 
-    const defaultPayload = this.store.selectSnapshot<AuthPayloadModel | null>(
-      AuthDataState.getPayload
-    );
+    const defaultPayloadFromStore =
+      this.store.selectSnapshot<AuthPayloadModel | null>(
+        AuthDataState.getPayload
+      );
 
     this.logger.console.debug(
       this.__classname,
-      'defaultPayload',
-      defaultPayload
+      'defaultPayloadFromStore',
+      defaultPayloadFromStore
     );
 
-    const defaultProviderEnabled = this.checkIfDefaultProviderIsEnabled(
-      defaultProviderKey ? defaultProviderKey.providerId : null
+    const defaultProviderFromStoreIsEnabled =
+      this.checkIfDefaultProviderIsEnabled(
+        defaultProviderFromStore ? defaultProviderFromStore.providerId : null
+      );
+
+    this.logger.console.debug(
+      this.__classname,
+      'defaultProviderFromStoreIsEnabled',
+      defaultProviderFromStoreIsEnabled
     );
 
-    if (defaultProviderKey && defaultProviderEnabled) {
-      const defaultAuthData = defaultPayload;
+    let configureAsDefaultProviderId = defaultProviderFromStore?.providerId;
+    let configureAsDefaultAuthData = defaultPayloadFromStore;
+    let defaultProviderFromStoreIsMissing = false;
 
-      return this.configureAsDefault(
-        defaultProviderKey ? defaultProviderKey.providerId : null,
-        defaultAuthData ? defaultAuthData : null
-      ).then(
-        (result: boolean) => {
-          this.logger.console.debug(this.__classname, 'init -> finished');
-          return result;
-        },
-        (error: any) => {
-          this.logger.console.error(this.__classname, error);
-          return false;
-        }
+    if (!defaultProviderFromStore || !defaultProviderFromStoreIsEnabled) {
+      defaultProviderFromStoreIsMissing = true;
+
+      this.logger.console.debug(
+        this.__classname,
+        'defaultProviderFromStoreIsMissing',
+        defaultProviderFromStoreIsMissing
+      );
+
+      configureAsDefaultProviderId = this.providers[0]?.getProviderKey();
+      configureAsDefaultAuthData = null;
+
+      this.logger.console.debug(
+        this.__classname,
+        'defaultProviderFromStoreIsMissing',
+        defaultProviderFromStoreIsMissing
       );
     }
-    this.logger.console.debug(this.__classname, 'init -> finished');
 
-    return Promise.resolve(true);
+    if (!configureAsDefaultProviderId) {
+      this.logger.console.error(
+        this.__classname,
+        'configureAsDefaultProviderId',
+        configureAsDefaultProviderId
+      );
+      return Promise.resolve(false);
+    }
+
+    return this.configureAsDefault(
+      configureAsDefaultProviderId,
+      configureAsDefaultAuthData
+    ).then(
+      (result: boolean) => {
+        this.logger.console.debug(this.__classname, 'init -> finished');
+
+        if (defaultProviderFromStoreIsMissing) {
+          const isLogged = this.store.selectSnapshot<boolean | null>(
+            (state) => state.auth?.logged
+          );
+
+          this.logger.console.debug(this.__classname, 'isLogged -> isLogged', isLogged);
+
+          if (isLogged) {
+            this.logger.console.debug(
+              this.__classname,
+              'defaultProviderFromStoreIsMissing -> dispatchLogoutAuthData()'
+            );
+
+            this.dispatchLogoutAuthData({});
+
+            this.dispatchLogoutSuccessfully();
+          }
+        }
+
+        return result;
+      },
+      (error: any) => {
+        this.logger.console.error(this.__classname, error);
+        return false;
+      }
+    );
   }
 
   protected checkIfDefaultProviderIsEnabled(
