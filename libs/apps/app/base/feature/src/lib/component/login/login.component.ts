@@ -30,9 +30,9 @@ export class LoginComponent
   // ----------------------------------------------------------------
 
   public form: FormGroup = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(3)]],
-    password: [null, [Validators.required, Validators.minLength(3)]],
-    rememberme: [null, []],
+    username: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(3)]],
+    rememberme: [false, []],
   });
 
   // ----------------------------------------------------------------
