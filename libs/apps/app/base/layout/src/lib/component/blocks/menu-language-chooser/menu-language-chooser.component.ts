@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { AbstractComponent } from '@app/core/api';
-import { FlowStatusModel } from '@app/core/flow/store/model';
-import { FlowDataState } from '@app/core/flow/store/state';
 import { MenuDataState } from '@app/core/menu/store/state';
 import { TranslationManagerService } from '@app/core/translation/manager';
 import { TranslationDataState } from '@app/core/translation/store/state';
@@ -29,14 +27,11 @@ export class MenuLanguageChooserComponent
   // OBSERVABLES
   // -----------------------------------------------------
 
-  @Select(MenuDataState.getMenuItemsSelector('languages-chooser-options'))
+  @Select(MenuDataState.getMenuItemsSelector('language-available-options'))
   public languagesChooserOptions$!: Observable<any[]>;
 
   @Select(TranslationDataState.getCurrentLanguage)
   public currentLanguage$!: Observable<string>;
-
-  @Select(FlowDataState.getStatus)
-  public currentFlowStatus$!: Observable<FlowStatusModel>;
 
   // -----------------------------------------------------
 

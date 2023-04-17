@@ -27,6 +27,11 @@
     <c-sidebar-nav [navItems]="navItems" dropdownMode="close"> </c-sidebar-nav>
   </perfect-scrollbar>
 
+  <c-sidebar-footer *ngIf="footerNavItems.length > 0">
+    <c-sidebar-nav [navItems]="footerNavItems" dropdownMode="close">
+    </c-sidebar-nav>
+  </c-sidebar-footer>
+
   <c-sidebar-toggler
     *ngIf="!sidebar.narrow"
     toggle="unfoldable"
@@ -54,7 +59,11 @@
       <router-outlet></router-outlet>
     </c-container>
      -->
-    <c-container fluid class="h-auto ps-0 pe-0" [@routeAnimations]="getRouteAnimationData()">
+    <c-container
+      fluid
+      class="h-auto ps-0 pe-0"
+      [@routeAnimations]="getRouteAnimationData()"
+    >
       <router-outlet></router-outlet>
     </c-container>
   </div>

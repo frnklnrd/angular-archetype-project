@@ -5,7 +5,6 @@
         href="javascript:void(0)"
         cNavLink
         (click)="changeCurrentLang(lang.key)"
-        [disabled]="(currentFlowStatus$ | async)?.flowActionCanBackward === true"
         [class.active]="lang.key === (currentLanguage$ | async)"
       >
         <svg cIcon [name]="lang.iconName" size="lg"></svg>

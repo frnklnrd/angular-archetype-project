@@ -1,17 +1,12 @@
+import { isDevMode } from '@angular/core';
 import { INavData } from '@coreui/angular';
+import { APP_TRANSLATION_CONFIG } from '../translation/app.translation.config';
 
-export const navItems: INavData[] = [
-  /*
-  {
-    name: 'Home',
-    url: '/',
-    iconComponent: { name: 'cil-home' },
-  },
-  */
+const appNavItems: INavData[] = [
   {
     name: 'Dashboard',
     url: '/dashboard',
-    iconComponent: { name: 'cil-speedometer' },
+    iconComponent: { name: 'cil-house' },
     badge: {
       color: 'info',
       text: 'NEW',
@@ -29,6 +24,9 @@ export const navItems: INavData[] = [
       },
     ],
   },
+];
+
+const demoNavItems: INavData[] = [
   {
     name: 'Demo',
     url: '/demo',
@@ -307,3 +305,19 @@ export const navItems: INavData[] = [
   },
   */
 ];
+
+const sideBarMainNavItems: INavData[] = [...appNavItems];
+
+const sideBarFooterNavItems: INavData[] = [
+  ...(!isDevMode() ? [] : demoNavItems),
+];
+
+export const APP_MENU_NAV_CONFIG = {
+  sidebar: {
+    main: sideBarMainNavItems,
+    footer: sideBarFooterNavItems,
+  },
+  lang: {
+    available: APP_TRANSLATION_CONFIG.languages,
+  },
+};

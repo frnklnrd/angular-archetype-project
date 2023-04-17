@@ -19,7 +19,7 @@ import {
 import { LoggerService } from '@app/util/logger/manager';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HttpResponseAuthorizationErrorInterceptor } from '@app/core/auth/interceptor/default';
+import { HttpRequestAppendAuthorizationTokenToApiCallInterceptor, HttpResponseAuthorizationErrorInterceptor } from '@app/core/auth/interceptor/default';
 import { CoreAuthProviderLaravel9Module } from '@app/core/auth/provider/laravel9';
 import { CoreAuthProviderOauth2SocialFacebookModule } from '@app/core/auth/provider/oauth2-social-facebook';
 import { FlowManagerService } from '@app/core/flow/manager';
@@ -79,6 +79,11 @@ if (APP_AUTH_CONFIG.providers.laravel9.enabled) {
       useClass: HttpResponseAuthorizationErrorInterceptor,
       multi: true,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestAppendAuthorizationTokenToApiCallInterceptor,
+      multi: true,   
+    }
   ],
   exports: [
     // CoreAuthGuardDefaultModule

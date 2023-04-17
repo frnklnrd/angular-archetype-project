@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ChildrenOutletContexts } from '@angular/router';
 import { AbstractComponent } from '@app/core/api';
+import { MenuDataState } from '@app/core/menu/store/state';
 import { INavData } from '@coreui/angular';
-import { Store } from '@ngxs/store';
-import { APP_LAYOUT_NAV_DATA } from '../../../variable/variables';
-import {
-  faderAnimations,
-  slideInAnimations,
-  slideLeftRightAnimations,
-  translateRotateAnimations,
-} from '../../animations';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { slideInAnimations } from '../../animations';
 
 // navItems = [];
 
@@ -26,24 +22,62 @@ import {
     // translateRotateAnimations
   ],
 })
-export class DefaultLayoutComponent extends AbstractComponent {
-  store: Store = inject<Store>(Store);
+export class DefaultLayoutComponent
+  extends AbstractComponent
+  implements OnInit
+{
+  // ---------------------------------------------------------------------
+
+  private store: Store = inject<Store>(Store);
 
   private contexts: ChildrenOutletContexts = inject<ChildrenOutletContexts>(
     ChildrenOutletContexts
   );
 
-  public navItems: INavData[] = inject<INavData[]>(APP_LAYOUT_NAV_DATA);
+  // ---------------------------------------------------------------------
 
-  public theme = 'light'; // dark
+  @Select(MenuDataState.getMenuItemsSelector('layout-sidebar-main-items'))
+  protected navItems$!: Observable<INavData[]>;
 
-  public perfectScrollbarConfig = {
+  @Select(MenuDataState.getMenuItemsSelector('layout-sidebar-footer-items'))
+  protected footerNavItems$!: Observable<INavData[]>;
+
+  // ---------------------------------------------------------------------
+
+  navItems: INavData[] = [];
+
+  footerNavItems: INavData[] = [];
+
+  theme = 'light'; // dark
+
+  perfectScrollbarConfig = {
     suppressScrollX: true,
   };
+
+  // ---------------------------------------------------------------------
 
   constructor() {
     super();
     //
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.navItems = [];
+    this.footerNavItems = [];
+
+    this.addSubscription(
+      this.navItems$.subscribe((data) => {
+        this.navItems = data;
+      })
+    );
+
+    this.addSubscription(
+      this.footerNavItems$.subscribe((data) => {
+        this.footerNavItems = data;
+      })
+    );
   }
 
   onSideBarToggle($event: any): void {

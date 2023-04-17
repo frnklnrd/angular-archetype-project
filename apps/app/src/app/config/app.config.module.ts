@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
-import { inject, NgModule, Optional, SkipSelf } from '@angular/core';
+import { inject, isDevMode, NgModule, Optional, SkipSelf } from '@angular/core';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoggerService } from '@app/util/logger/manager';
 import { AppEnvConfigModule } from './_env/app.env.config.module';
 import { AppNavConfigModule } from './_nav/app.nav.config.module';
@@ -13,7 +14,6 @@ import { AppDynamicFormsConfigModule } from './dynamic-forms/app.dynamic-forms.c
 import { AppFlowConfigModule } from './flow/app.flow.config.module';
 import { AppLoaderConfigModule } from './loader/app.loader.config.module';
 import { AppLoggerConfigModule } from './logger/app.logger.config.module';
-import { AppMenuConfigModule } from './menu/app.menu.config.module';
 import { AppStateConfigModule } from './state/app.state.config.module';
 import { AppTranslationConfigModule } from './translation/app.translation.config.module';
 
@@ -66,13 +66,18 @@ import { AppTranslationConfigModule } from './translation/app.translation.config
     // ----------------
     AppNavConfigModule,
     // ----------------
-    // Menu
-    // ----------------
-    AppMenuConfigModule,
-    // ----------------
     // Dynamic Forms
     // ----------------
     AppDynamicFormsConfigModule,
+    // ----------------
+    // PWA
+    // ----------------
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
     // ----------------
   ],
   providers: [],

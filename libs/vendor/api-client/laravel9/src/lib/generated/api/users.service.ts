@@ -180,16 +180,18 @@ export class UsersService {
      * @param filtersName 
      * @param filtersEmail 
      * @param filtersCreatedAt 
+     * @param filtersEmailVerifiedAt 
      * @param filtersAvatar 
      * @param filtersRoleId 
      * @param filtersUserBelongstomanyRoleRelationship 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersEmailVerifiedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersEmailVerifiedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersEmailVerifiedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public usersIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersEmail?: any, filtersCreatedAt?: any, filtersEmailVerifiedAt?: any, filtersAvatar?: any, filtersRoleId?: any, filtersUserBelongstomanyRoleRelationship?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
 
 
 
@@ -226,6 +228,9 @@ export class UsersService {
         }
         if (filtersCreatedAt !== undefined && filtersCreatedAt !== null) {
             queryParameters = queryParameters.set('filters[created_at]', <any>filtersCreatedAt);
+        }
+        if (filtersEmailVerifiedAt !== undefined && filtersEmailVerifiedAt !== null) {
+            queryParameters = queryParameters.set('filters[email_verified_at]', <any>filtersEmailVerifiedAt);
         }
         if (filtersAvatar !== undefined && filtersAvatar !== null) {
             queryParameters = queryParameters.set('filters[avatar]', <any>filtersAvatar);

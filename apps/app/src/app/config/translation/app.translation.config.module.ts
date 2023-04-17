@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import ngLocaleAr from '@angular/common/locales/ar';
 import ngLocaleEn from '@angular/common/locales/en';
 import ngLocaleEs from '@angular/common/locales/es';
-import { inject, NgModule, Optional, SkipSelf } from '@angular/core';
+import { NgModule, Optional, SkipSelf, inject } from '@angular/core';
 import {
   CoreTranslationManagerModule,
   TranslationManagerService,
@@ -14,7 +14,12 @@ import {
 import { TranslationDataState } from '@app/core/translation/store/state';
 import { VendorTranslationNgxTranslateModule } from '@app/vendor/translation/ngx-translate';
 
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  MissingTranslationHandler,
+  MissingTranslationHandlerParams,
+  TranslateLoader,
+  TranslateModule,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Select, Store } from '@ngxs/store';
 import { defineLocale as bsDefineLocale } from 'ngx-bootstrap/chronos';
@@ -34,6 +39,15 @@ bsDefineLocale('en-gb', bsLocaleEn);
 bsDefineLocale('es-es', bsLocaleEs);
 bsDefineLocale('ar-ar', bsLocaleAr);
 
+class CustomMissingTranslationHandler implements MissingTranslationHandler {
+  constructor() {
+    //
+  }
+  handle(params: MissingTranslationHandlerParams) {
+    return `MISSING_TRANSLATION: [${params.key}]`;
+  }
+}
+
 @NgModule({
   declarations: [],
   imports: [
@@ -47,6 +61,11 @@ bsDefineLocale('ar-ar', bsLocaleAr);
           return new TranslateHttpLoader(http, './assets/i18n/', '.json');
         },
         deps: [HttpClient],
+      },
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler,
+        deps: [],
       },
     }),
     // ----------------

@@ -49,7 +49,15 @@ if (!APP_ENV_CONFIG.production) {
       filter: (action) => {
         const actionName: string | undefined =
           getActionTypeFromInstance(action);
-        return actionName ? actionName.indexOf('[FLOW]') === -1 : true;
+        return actionName
+          ? actionName !== null &&
+              /* actionName.indexOf('@@INIT') === -1 && */
+              /* actionName.indexOf('@@UPDATE_STATE') === -1 && */
+              actionName.indexOf('[AUTH]') === -1 &&
+              actionName.indexOf('[FLOW]') === -1 &&
+              actionName.indexOf('[TRANSLATION]') === -1 &&
+              actionName.indexOf('[Router]') === -1
+          : true;
       },
     })
   );

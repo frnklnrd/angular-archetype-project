@@ -178,14 +178,16 @@ export class RolesService {
      * @param orderBy Sort by column
      * @param sortOrder Sort by direction
      * @param filtersName 
+     * @param filtersCreatedAt 
      * @param filtersDisplayName 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersDisplayName?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersDisplayName?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersDisplayName?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersDisplayName?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersCreatedAt?: any, filtersDisplayName?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersCreatedAt?: any, filtersDisplayName?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersCreatedAt?: any, filtersDisplayName?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public rolesIndex(q?: any, page?: any, length?: any, orderBy?: any, sortOrder?: any, filtersName?: any, filtersCreatedAt?: any, filtersDisplayName?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
 
 
 
@@ -212,6 +214,9 @@ export class RolesService {
         }
         if (filtersName !== undefined && filtersName !== null) {
             queryParameters = queryParameters.set('filters[name]', <any>filtersName);
+        }
+        if (filtersCreatedAt !== undefined && filtersCreatedAt !== null) {
+            queryParameters = queryParameters.set('filters[created_at]', <any>filtersCreatedAt);
         }
         if (filtersDisplayName !== undefined && filtersDisplayName !== null) {
             queryParameters = queryParameters.set('filters[display_name]', <any>filtersDisplayName);

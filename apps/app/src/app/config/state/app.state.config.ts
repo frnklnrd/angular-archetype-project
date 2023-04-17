@@ -6,12 +6,12 @@ import { TranslationDataState } from '@app/core/translation/store/state';
 import { State } from '@ngxs/store';
 import { APP_API_CONFIG } from '../api/app.api.config';
 import { APP_AUTH_CONFIG } from '../auth/app.auth.config';
-import { APP_MENU_CONFIG } from '../menu/app.menu.config';
 
 import { BooksDataState } from '@app/apps/app/module/books/store';
 import { FlowDataState } from '@app/core/flow/store/state';
 import { LoadingIndicatorState } from '@app/core/loader/store/state';
 import { APP_ENV_CONFIG } from '../_env/app.env.loader';
+import { APP_MENU_NAV_CONFIG } from '../_nav/app.nav.config';
 import { APP_FLOW_CONFIG } from '../flow/app.flow.config';
 import { APP_TRANSLATION_CONFIG } from '../translation/app.translation.config';
 
@@ -48,10 +48,11 @@ import { APP_TRANSLATION_CONFIG } from '../translation/app.translation.config';
     },
     menu: {
       sidebar: {
-        main: APP_MENU_CONFIG.sidebar.main,
+        main: APP_MENU_NAV_CONFIG.sidebar.main,
+        footer: APP_MENU_NAV_CONFIG.sidebar.footer,
       },
       lang: {
-        available: APP_MENU_CONFIG.lang.available,
+        available: APP_MENU_NAV_CONFIG.lang.available,
       },
     },
     socket: {

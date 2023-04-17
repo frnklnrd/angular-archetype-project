@@ -15,19 +15,25 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/app",
         "index": "apps/app/src/index.html",
         "main": "apps/app/src/main.ts",
-        "polyfills": ["zone.js", "apps/app/src/polyfills.ts"],
+        "polyfills": [
+          "zone.js",
+          "apps/app/src/polyfills.ts"
+        ],
         "tsConfig": "apps/app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "preserveSymlinks": true,
         "assets": [
           "apps/app/src/assets/favicon.ico",
-          "apps/app/src/assets/manifest.webmanifest",
-          "apps/app/src/assets"
+          "apps/app/src/manifest.webmanifest",
+          "apps/app/src/assets",
+          "apps/app/src/manifest.webmanifest"
         ],
         "styles": [
           "./node_modules/font-awesome/css/font-awesome.css",
@@ -57,7 +63,9 @@
           "chart.js",
           "@coreui/chartjs/dist/js/coreui-chartjs.js",
           "angular2-text-mask"
-        ]
+        ],
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/app/ngsw-config.json"
       },
       "configurations": {
         "production": {
@@ -113,21 +121,37 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/app/**/*.ts", "apps/app/**/*.html"]
+        "lintFilePatterns": [
+          "apps/app/**/*.ts",
+          "apps/app/**/*.html"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/app/jest.config.ts",
         "passWithNoTests": true,
-        "polyfills": ["zone.js", "apps/app/src/polyfills.ts"],
+        "polyfills": [
+          "zone.js",
+          "apps/app/src/polyfills.ts"
+        ],
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/app/src/favicon.ico", "apps/app/src/assets"],
-        "styles": ["apps/app/src/scss/styles.scss"],
+        "assets": [
+          "apps/app/src/favicon.ico",
+          "apps/app/src/assets",
+          "apps/app/src/manifest.webmanifest"
+        ],
+        "styles": [
+          "apps/app/src/scss/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {

@@ -32,9 +32,15 @@ export class HttpResponseAuthorizationErrorInterceptor
       catchError((err) => {
         if (err.status === 401) {
           // auto logout if 401 response returned from api
-          this.auth.logout().then();
+          this.auth
+            .logout({})
+            .then(() => {
+              this.auth.dispatchLogoutSuccessfully();
+            })
+            .catch((e) => {
+              //
+            });
         }
-
         const error = err.error.message || err.statusText;
         return throwError(error);
       })
