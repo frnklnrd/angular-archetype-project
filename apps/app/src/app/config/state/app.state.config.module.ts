@@ -53,9 +53,11 @@ if (!APP_ENV_CONFIG.production) {
           ? actionName !== null &&
               /* actionName.indexOf('@@INIT') === -1 && */
               /* actionName.indexOf('@@UPDATE_STATE') === -1 && */
+              actionName.indexOf('[TRANSLATION]') === -1 &&
+              actionName.indexOf('[LOADING INDICATOR]') === -1 &&
               actionName.indexOf('[AUTH]') === -1 &&
               actionName.indexOf('[FLOW]') === -1 &&
-              actionName.indexOf('[TRANSLATION]') === -1 &&
+              actionName.indexOf('[MENU]') === -1 &&
               actionName.indexOf('[Router]') === -1
           : true;
       },
