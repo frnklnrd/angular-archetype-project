@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist/apps/app /usr/share/nginx/html
 
 # Copia el archivo de configuración de nginx a la imagen del contenedor
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expone el puerto 80 para que se pueda acceder a la aplicación desde fuera del contenedor
 EXPOSE 80
