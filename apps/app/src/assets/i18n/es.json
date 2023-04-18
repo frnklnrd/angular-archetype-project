@@ -68,6 +68,7 @@
     "errors": {
       "maxlength": "Máxima longitud requerida de {{ requiredLength }}.",
       "minlength": "Mínima longitud requerida de {{ requiredLength }}.",
+      "mask": "{{ label }} con formato incorrecto.",
       "required": "{{ label }} es requerido."
     },
     "template": {

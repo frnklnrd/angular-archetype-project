@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    image: angular_frontend_web_server_image
+    container_name: angular_frontend_web_server_container
+    hostname: frontend_web_server
+    ports:
+      - 9001:80
+    #volumes:
+    #  - app_src_data:/app
+
+#volumes:
+#  app_src_data:

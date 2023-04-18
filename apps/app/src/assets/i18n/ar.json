@@ -68,6 +68,7 @@
     "errors": {
       "maxlength": "Max length required is {{ requiredLength }}.",
       "minlength": "Min length required is {{ requiredLength }}.",
+      "mask": "{{ label }} malformed.",
       "required": "{{ label }} is required."
     },
     "template": {

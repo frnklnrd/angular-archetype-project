@@ -274,7 +274,10 @@ export class BookAddEditFormComponent
       new DynamicInputModel({
         id: 'maskedInput',
         label: 'Masked Input',
-        mask: '', // [ '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, ],
+        mask: '00/00/0000',
+        maskConfig: {
+          showMaskTyped: true,
+        },
       }),
 
       new DynamicInputModel({
@@ -331,23 +334,25 @@ export class BookAddEditFormComponent
         }
       ),
 
-      new DynamicCheckboxModel({
-        id: 'sampleCheckbox',
-        label: 'I do agree',
-        disabled: !editable,
-      },
-      {
-        element: {
-          host: 'col-sm-12 col-xs-12 elem-abc1 mt-2',
-          container: 'elem-abc2',
-          control: 'elem-abc3',
+      new DynamicCheckboxModel(
+        {
+          id: 'sampleCheckbox',
+          label: 'I do agree',
+          disabled: !editable,
         },
-        grid: {
-          host: 'dynamic-form-control-custom-host-t col-sm-12 col-xs-12 grid-abc1',
-          container: 'grid-abc2',
-          control: 'grid-abc3',
-        },
-      }),
+        {
+          element: {
+            host: 'col-sm-12 col-xs-12 elem-abc1 mt-2',
+            container: 'elem-abc2',
+            control: 'elem-abc3',
+          },
+          grid: {
+            host: 'dynamic-form-control-custom-host-t col-sm-12 col-xs-12 grid-abc1',
+            container: 'grid-abc2',
+            control: 'grid-abc3',
+          },
+        }
+      ),
 
       new DynamicFormGroupModel({
         id: 'fullName',
